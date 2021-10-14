@@ -1,0 +1,2 @@
+This is a temporary python script demonstrating an RPI acting as the I2C leader that is collecting odometry data from its followers (3 stm32f4).
+This code will be integrated into ROS.

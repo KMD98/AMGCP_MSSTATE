@@ -1,3 +1,4 @@
+#DEPRECATED
 #Before parsing, generate json file from shp files with time stamp at https://mapshaper.org/ the website is free
 import gcpfunctions
 from gcpfunctions import findSmallestandBiggest, createGCPlongpath,createGCPlatpath, findMaxdistance

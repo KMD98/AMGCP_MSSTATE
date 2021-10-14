@@ -1,0 +1,1 @@
+the following codes work together to parse shp files and let operator choose waypoints based on drone flight. the program will ensure that the operator pick optimized waypoints that give the most overlap in drone imagery

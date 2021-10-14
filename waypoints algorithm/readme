@@ -1,4 +1,4 @@
 the following codes work together to parse shp files and let operator choose waypoints based on drone flight. 
 The program will ensure that the operator pick optimized waypoints that give the most overlap in drone imagery.
-Files are in shp format so conver to .json before running algorithm MapChoose.py
+Files are in shp format so conver to .json before running algorithm MapChooseWP.py
 Video Demo is at https://www.youtube.com/watch?v=haW9aEzZedo

@@ -19,11 +19,24 @@ def readingI2Cbus(addr):
     data.remove('!') #remove all limiter in the beginning
     return ''.join(data)
 
-while True:
-    drone_coor = readingI2Cbus(addr_droneCoor)
-    mgcp_coor =readingI2Cbus(addr_MGCPCoor)
-    heading =readingI2Cbus(addr_heading)
-    print("Drone coordinates:", drone_coor)
-    print("MGCP coordinates:", mgcp_coor)
-    print('MGCP heading',heading)
-    time.sleep(1.0)
+def coordinateParse(coordinates):
+    temp_list = coordinates.split(',')
+    return float(temp_list[0]), float(temp_list[1]),float(temp_list[2]), float(temp_list[3]) #lat, lon, height above ellipsoid, hmsl
+
+'''def writeRTM(data): #send to real time monitoring sender uncomment when ready
+    for i in range (0,len(data)):
+        bus.write_byte(0x06,data[i]) #address of real time monitor sender'''
+
+if __name__ == '__main__':
+    while True:
+        drone_coor = readingI2Cbus(addr_droneCoor) #a string of coordinates
+        mgcp_coor =readingI2Cbus(addr_MGCPCoor) #a  string of coordinates        
+        heading =float(readingI2Cbus(addr_heading)) #a string of heading value but turned to float
+        drone_lat,drone_lon,drone_height,drone_hmsl = coordinateParse(drone_coor) #parsed coor and turn to float
+        mgcp_lat,mgcp_lon,mgcp_height,mgcp_hmsl = coordinateParse(mgcp_coor)#parsed coor and turned into float
+        print("Drone coor:", drone_lat,drone_lon,drone_height,drone_hmsl)
+        print("MGCP coor:", mgcp_lat,mgcp_lon,mgcp_height,mgcp_hmsl)
+        print('MGCP heading',heading)
+        '''#write to real time sender
+        #writeRTM("!" + drone_coor + "!" + mgcp_coor + "!" + str(heading) + "!" + hot_temp + "!" + cold_temp + "#")'''
+        time.sleep(1.0)

@@ -15,6 +15,8 @@ struct 3Dcoor{
   int left_height;
   int right_height;
 }
+//Declare the instance of the struct
+struct 3Dcoor drone_coor;
 void setup() {
   Serial.begin(19200);
   xbee.begin(19200);
@@ -61,4 +63,5 @@ void loop() {
 void requestEvent(){
   newData = false;
   //Write struct 3D, entire byte array
+  Wire.write((byte *)&drone_coor, sizeof drone_coor);
 }

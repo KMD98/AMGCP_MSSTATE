@@ -8,6 +8,7 @@ int i = 0;
 String temp;
 bool newData = true;
 struct 3Dcoor{
+  //24 bytes in total to be send
   int left_lat;
   int right_lat;
   int left_lon;

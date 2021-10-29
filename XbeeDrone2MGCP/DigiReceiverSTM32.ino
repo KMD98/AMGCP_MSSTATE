@@ -8,11 +8,15 @@ int i = 0;
 String temp;
 bool newData = true;
 int count = -2;
-String realData;
-byte high;
-byte low;
+struct 3Dcoor{
+  int left_lat;
+  int right_lat;
+  int left_lon;
+  int right_lon;
+  int left_height;
+  int right_height;
+}
 void setup() {
-
   Serial.begin(19200);
   xbee.begin(19200);
   Wire2.begin(0x8);
@@ -42,9 +46,6 @@ void loop() {
             temp = temp + String(tempCarray[c]);
             c++;
           }
-          //Serial.print(temp);
-          realData = temp;
-          Serial.println(realData);
           //reset all temp variables
           temp = "";
           memset(tempCarray,0,sizeof(tempCarray)); 

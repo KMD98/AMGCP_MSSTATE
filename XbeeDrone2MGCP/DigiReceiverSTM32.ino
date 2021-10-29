@@ -7,7 +7,6 @@ TwoWire Wire2(PB7,PB6);
 int i = 0;
 String temp;
 bool newData = true;
-int count = -2;
 struct 3Dcoor{
   int left_lat;
   int right_lat;
@@ -61,26 +60,5 @@ void loop() {
 
 void requestEvent(){
   newData = false;
-  int data_length = realData.length();
-  if (count == -2){
-    high = data_length>>8;
-    low = data_length & (0xFF);
-    Wire2.write(high);
-    count++;
-  }
-  else if (count == -1){
-    Wire2.write(low);
-    count++;
-  }
-  else if (count >= 0 and count < data_length and realData != ""){
-    Wire2.write(realData[count]);
-    count++;
-    if (count == data_length){
-      count = -2;
-      newData = true;
-      realData = "";
-      high = 0;
-      low = 0; 
-    }
-  }
+  //Write struct 3D, entire byte array
 }

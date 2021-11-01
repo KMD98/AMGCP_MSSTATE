@@ -95,5 +95,11 @@ void parser(char data[], int n, int index, int comma_place){
     i++;
     index++;
   }
-  
+  switch (data_type){
+    case 0:
+      drone_coor.left_lat = atoi(tempLeft);
+      drone_coor.right_lat = atoi(tempRight);
+      break;
+  }
+
 }

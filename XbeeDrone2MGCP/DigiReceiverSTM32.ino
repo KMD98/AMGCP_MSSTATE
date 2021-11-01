@@ -75,8 +75,25 @@ void stringParsing(char data[], int n){
 }
 
 void parser(char data[], int n, int index, int comma_place){
+  char tempLeft[];
+  char tempRight[];
+  bool isLeft = true;
+  int i = 0;
   //Start parsing the numerical values and store to struct
   while(index <= comma_place){
-    temp = temp + data[index];
+    if (data[index] == '.'){
+      isLeft = false;
+      index++; //increment past the period to grab the next character
+      i = 0; //reset i
+    }
+    if (isLeft){
+      tempLeft[i] = data[index]
+    }
+    else if (!isleft){
+      tempRight[i] = data[index]
+    }
+    i++;
+    index++;
   }
+  
 }

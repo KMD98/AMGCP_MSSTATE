@@ -14,7 +14,7 @@ struct coor{
   int right_lon;
   int left_height;
   int right_height;
-}
+};
 //Declare the instance of the struct
 struct coor drone_coor;
 void setup() {

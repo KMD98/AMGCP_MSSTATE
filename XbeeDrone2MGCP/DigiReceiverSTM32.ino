@@ -69,10 +69,6 @@ void stringParsing(char data[], int n){
       index = i;
       data_type++;
     }
-    else if (data[i] == '#'){
-      comma_place = i;
-      parser(data,sizeof(data),index + 1, comma_place - 1);
-    }
   }
 }
 
@@ -101,12 +97,17 @@ void parser(char data[], int n, int index, int comma_place, int data_type){
     case 0:
       drone_coor.left_lat = atoi(tempLeft);
       drone_coor.right_lat = atoi(tempRight);
+      Serial.print(drone_coor.left_lat);Serial.println(drone_coor.right_lat);
       break;
     case 1:
       drone_coor.left_lon = atoi(tempLeft);
       drone_coor.right_lon = atoi(tempRight);
+      Serial.print(drone_coor.left_lon);Serial.println(drone_coor.right_lon);
+      break;
     case 2:
       drone_coor.left_height = atoi(tempLeft);
       drone_coor.right_height = atoi(tempRight);
+      Serial.print(drone_coor.left_height);Serial.println(drone_coor.right_height);
+      break;
   }
 }

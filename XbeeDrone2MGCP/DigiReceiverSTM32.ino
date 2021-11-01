@@ -90,10 +90,10 @@ void parser(char data[], int n, int index, int comma_place, int data_type){
       i = 0; //reset i
     }
     if (isLeft){
-      tempLeft[i] = data[index]
+      tempLeft[i] = data[index];
     }
     else if (!isLeft){
-      tempRight[i] = data[index]
+      tempRight[i] = data[index];
     }
     i++;
     index++;

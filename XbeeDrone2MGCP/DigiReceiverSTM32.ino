@@ -78,8 +78,8 @@ void stringParsing(char data[], int n){
 }
 
 void parser(char data[], int n, int index, int comma_place, int data_type){
-  char tempLeft[];
-  char tempRight[];
+  char tempLeft[10];
+  char tempRight[10];
   bool isLeft = true;
   int i = 0;
   //Start parsing the numerical values and store to struct
@@ -92,7 +92,7 @@ void parser(char data[], int n, int index, int comma_place, int data_type){
     if (isLeft){
       tempLeft[i] = data[index]
     }
-    else if (!isleft){
+    else if (!isLeft){
       tempRight[i] = data[index]
     }
     i++;

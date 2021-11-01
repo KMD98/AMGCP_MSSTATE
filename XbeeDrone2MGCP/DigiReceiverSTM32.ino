@@ -65,7 +65,7 @@ void stringParsing(char data[], int n){
   //if the inital character received is garbage then disregard it and move onto the next
   for(int i = 0; i < n; i++){
     if (data[i] == '!'){
-      index = i
+      index = i;
     }
     if (data[i] == ','){
       //Insert parser

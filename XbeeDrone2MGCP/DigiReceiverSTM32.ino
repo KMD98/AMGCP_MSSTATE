@@ -36,7 +36,7 @@ void loop() {
           //Print the char array to compare to results of the struct
           for (int i = 0; i < sizeof(tempCarray);i++){
             Serial.print(tempCarray[i]);
-          }
+        }
           Serial.println();
           //Call parsing function to initialize 3D struct
           stringParsing(tempCarray,sizeof(tempCarray));
@@ -47,15 +47,15 @@ void loop() {
           tempCarray[i] = received;
           i++;
         }
-    }
+      }
   }
-
 }
 
 void requestEvent(){
   newData = false;
   //Write struct 3D, entire byte array
   Wire.write((byte *)&drone_coor, sizeof drone_coor);
+  newData = true;
 }
 
 void stringParsing(char data[], int n){

@@ -5,7 +5,6 @@ char tempCarray [80]; //Declared as much bigger than we need just in case string
 SoftwareSerial xbee(PA10, PA9);
 TwoWire Wire2(PB7,PB6);
 int i = 0;
-String temp;
 bool newData = true;
 struct 3Dcoor{
   //24 bytes in total to be send
@@ -76,9 +75,8 @@ void stringParsing(char data[], int n){
 }
 
 void parser(char data[], int n, int index, int comma_place){
-  string temp = "";
-  while(index < comma_place){
+  //Start parsing the numerical values and store to struct
+  while(index <= comma_place){
     temp = temp + data[index];
-    index++;
   }
 }

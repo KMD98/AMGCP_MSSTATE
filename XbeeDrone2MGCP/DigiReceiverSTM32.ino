@@ -34,22 +34,9 @@ void loop() {
         }
         else if (received == '#'){
           tempCarray[i] = received;
-          i = 0;
-          int c = 1;
-          // We use a string because there are more library for string. Dealing with a char array is time consuming. We sacrifice a bit of performance but shouldnt matter
-          temp = String(tempCarray[0]);
-          //if the inital character received is garbage then disregard it and move onto the next
-          if (temp != "!"){
-            c = 2;
-            temp = String(tempCarray[1]);
-          }
-          //Print the first character to serial com
-          while (c < sizeof(tempCarray)){
-            temp = temp + String(tempCarray[c]);
-            c++;
-          }
-          //reset all temp variables
-          temp = "";
+          //Call parsing function to initialize 3D struct
+          stringParsing(tempCarray,sizeof(tempCarray);
+          //Reset C array
           memset(tempCarray,0,sizeof(tempCarray)); 
         }
         else{
@@ -65,4 +52,11 @@ void requestEvent(){
   newData = false;
   //Write struct 3D, entire byte array
   Wire.write((byte *)&drone_coor, sizeof drone_coor);
+}
+
+void stringParsing(char data[], int n){
+  //if the inital character received is garbage then disregard it and move onto the next
+  if (temp != "!"){
+    c = 2;
+  }
 }

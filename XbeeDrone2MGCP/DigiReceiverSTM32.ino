@@ -6,7 +6,7 @@ SoftwareSerial xbee(PA10, PA9);
 TwoWire Wire2(PB7,PB6);
 int i = 0;
 bool newData = true;
-struct 3Dcoor{
+struct coor{
   //24 bytes in total to be send
   int left_lat;
   int right_lat;
@@ -16,7 +16,7 @@ struct 3Dcoor{
   int right_height;
 }
 //Declare the instance of the struct
-struct 3Dcoor drone_coor;
+struct coor drone_coor;
 void setup() {
   Serial.begin(19200);
   xbee.begin(19200);
@@ -36,7 +36,7 @@ void loop() {
           //Print the char array to compare to results of the struct
           for (int i = 0; i < sizeof(tempCarray);i++){
             Serial.print(tempCarray[i]);
-        }
+          }
           Serial.println();
           //Call parsing function to initialize 3D struct
           stringParsing(tempCarray,sizeof(tempCarray));

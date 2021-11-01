@@ -33,6 +33,11 @@ void loop() {
         }
         else if (received == '#'){
           tempCarray[i] = received;
+          //Print the char array to compare to results of the struct
+          for (int i = 0; i < sizeof(tempCarray);i++){
+            Serial.print(tempCarray[i]);
+          }
+          Serial.println();
           //Call parsing function to initialize 3D struct
           stringParsing(tempCarray,sizeof(tempCarray));
           //Reset C array

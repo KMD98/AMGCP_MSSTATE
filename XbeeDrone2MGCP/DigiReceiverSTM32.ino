@@ -56,17 +56,29 @@ void requestEvent(){
 
 void stringParsing(char data[], int n){
   int index = 0;
+  int comma_place = 0;
   //if the inital character received is garbage then disregard it and move onto the next
   for(int i = 0; i < n; i++){
     if (data[i] == '!'){
       index = i
     }
-    if (data[i] == ',' && comma_count == 1){
+    if (data[i] == ','){
       //Insert parser
+      comma_place = i;
+      parser(data,sizeof(data),index + 1,comma_place - 1);
+      index = i
+    }
+    else if (data[i] == '#'){
+      comma_place = i;
+      parser(data,sizeof(data),index + 1, comma_place - 1);
     }
   }
 }
 
-void parser(char data[], int n){
-  
+void parser(char data[], int n, int index, int comma_place){
+  string temp = "";
+  while(index < comma_place){
+    temp = temp + data[index];
+    index++;
+  }
 }

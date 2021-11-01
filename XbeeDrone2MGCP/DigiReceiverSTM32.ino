@@ -33,6 +33,7 @@ void loop() {
         }
         else if (received == '#'){
           tempCarray[i] = received;
+          i = 0;
           //Print the char array to compare to results of the struct
           for (int i = 0; i < sizeof(tempCarray);i++){
             Serial.print(tempCarray[i]);

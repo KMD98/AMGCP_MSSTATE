@@ -56,6 +56,7 @@ void requestEvent(){
 void stringParsing(char data[], int n){
   int index = 0;
   int comma_place = 0;
+  int data_type = 0;
   //if the inital character received is garbage then disregard it and move onto the next
   for(int i = 0; i < n; i++){
     if (data[i] == '!'){
@@ -64,8 +65,9 @@ void stringParsing(char data[], int n){
     if (data[i] == ','){
       //Insert parser
       comma_place = i;
-      parser(data,sizeof(data),index + 1,comma_place - 1);
-      index = i
+      parser(data,sizeof(data),index + 1,comma_place - 1, data_type);
+      index = i;
+      data_type++;
     }
     else if (data[i] == '#'){
       comma_place = i;
@@ -74,7 +76,7 @@ void stringParsing(char data[], int n){
   }
 }
 
-void parser(char data[], int n, int index, int comma_place){
+void parser(char data[], int n, int index, int comma_place, int data_type){
   char tempLeft[];
   char tempRight[];
   bool isLeft = true;
@@ -100,6 +102,11 @@ void parser(char data[], int n, int index, int comma_place){
       drone_coor.left_lat = atoi(tempLeft);
       drone_coor.right_lat = atoi(tempRight);
       break;
+    case 1:
+      drone_coor.left_lon = atoi(tempLeft);
+      drone_coor.right_lon = atoi(tempRight);
+    case 2:
+      drone_coor.left_height = atoi(tempLeft);
+      drone_coor.right_height = atoi(tempRight);
   }
-
 }

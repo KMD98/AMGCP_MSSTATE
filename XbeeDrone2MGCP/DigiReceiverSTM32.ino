@@ -35,7 +35,7 @@ void loop() {
         else if (received == '#'){
           tempCarray[i] = received;
           //Call parsing function to initialize 3D struct
-          stringParsing(tempCarray,sizeof(tempCarray);
+          stringParsing(tempCarray,sizeof(tempCarray));
           //Reset C array
           memset(tempCarray,0,sizeof(tempCarray)); 
         }
@@ -55,8 +55,18 @@ void requestEvent(){
 }
 
 void stringParsing(char data[], int n){
+  int index = 0;
   //if the inital character received is garbage then disregard it and move onto the next
-  if (temp != "!"){
-    c = 2;
+  for(int i = 0; i < n; i++){
+    if (data[i] == '!'){
+      index = i
+    }
+    if (data[i] == ',' && comma_count == 1){
+      //Insert parser
+    }
   }
+}
+
+void parser(char data[], int n){
+  
 }

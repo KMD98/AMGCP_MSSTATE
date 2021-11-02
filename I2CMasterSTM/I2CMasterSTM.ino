@@ -1,4 +1,5 @@
 #include <Wire.h>
+TwoWire Wire2(PB7,PB6);
 struct coor{
   //24 bytes in total to be send
   int left_lat;
@@ -12,7 +13,7 @@ struct coor{
 struct coor drone_coor;
 struct coor MGCP_coor;
 void setup() {
-  Wire.begin();        // join i2c bus (address optional for master)
+  Wire2.begin();        // join i2c bus (address optional for master)
   Serial.begin(19200);  // start serial for output
 }
 

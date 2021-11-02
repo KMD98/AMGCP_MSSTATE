@@ -7,7 +7,7 @@ struct coor{
   int right_lon;
   int left_height;
   int right_height;
-}
+};
 //Initialize instance for drone data
 struct coor drone_coor;
 struct coor MGCP_coor;

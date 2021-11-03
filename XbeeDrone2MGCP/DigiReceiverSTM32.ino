@@ -7,8 +7,7 @@ TwoWire Wire2(PB7,PB6);
 int count = 0;
 int incre = 0;
 bool newData = true;
-byte high;
-byte low;
+byte drone_data[12] = {1,0,2,0,3,0,4,0,5,0,6,0};
 struct coor{
   //24 bytes in total to be send
   int left_lat;
@@ -57,8 +56,8 @@ void loop() {
 
 void requestEvent(){
   newData = false;
-  //Write struct 3D, entire byte array
-  Wire2.write((byte *)&drone_coor, sizeof drone_coor);
+  //Write entire byte array
+  Wire2.write(drone_data, 12);
   newData = true;
 }
 

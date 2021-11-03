@@ -31,4 +31,6 @@ if __name__ == '__main__':
     while True:
         reading = bus.read_i2c_block_data(addr_droneCoor, 0, 12)
         print(reading)
+        length = (reading[0]<<8) + reading[1]
+        print(length)
         time.sleep(1.0)

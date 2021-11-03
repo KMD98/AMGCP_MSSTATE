@@ -29,14 +29,6 @@ def coordinateParse(coordinates):
 
 if __name__ == '__main__':
     while True:
-        drone_coor = readingI2Cbus(addr_droneCoor) #a string of coordinates
-        mgcp_coor =readingI2Cbus(addr_MGCPCoor) #a  string of coordinates        
-        heading =float(readingI2Cbus(addr_heading)) #a string of heading value but turned to float
-        drone_lat,drone_lon,drone_height,drone_hmsl = coordinateParse(drone_coor) #parsed coor and turn to float
-        mgcp_lat,mgcp_lon,mgcp_height,mgcp_hmsl = coordinateParse(mgcp_coor)#parsed coor and turned into float
-        print("Drone coor:", drone_lat,drone_lon,drone_height,drone_hmsl)
-        print("MGCP coor:", mgcp_lat,mgcp_lon,mgcp_height,mgcp_hmsl)
-        print('MGCP heading',heading)
-        #write to real time sender
-        #writeRTM("!" + drone_coor + "!" + mgcp_coor + "!" + str(heading) + "!" + hot_temp + "!" + cold_temp + "#")
+        reading = bus.read_i2c_block_data(addr_droneCoor, 0, 12)
+        print(reading)
         time.sleep(1.0)

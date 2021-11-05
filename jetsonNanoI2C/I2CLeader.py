@@ -29,7 +29,7 @@ def coordinateParse(coordinates):
 
 if __name__ == '__main__':
     while True:
-        reading = bus.read_i2c_block_data(addr_droneCoor, 0, 12)
+        reading = bus.read_i2c_block_data(addr_droneCoor, 0, 16)
         print(reading)
         #testing lat value being passed
         latleft = (reading[0]<<8) + reading[1]

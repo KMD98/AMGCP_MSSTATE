@@ -5,13 +5,15 @@ char tempCarray [80]; //Declared as much bigger than we need just in case string
 SoftwareSerial xbee(PA10, PA9);
 TwoWire Wire2(PB7,PB6);
 int count = 0;
-byte drone_data[12] = {0,0,0,0,0,0,0,0,0,0,0,0};
+byte drone_data[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 struct coor{
   //24 bytes in total to be send
   int left_lat;
   int right_lat;
+  int right_lat2;
   int left_lon;
   int right_lon;
+  int right_lon2;
   int left_height;
   int right_height;
 };
@@ -47,7 +49,7 @@ void loop() {
 
 void requestEvent(){
   //Write entire byte array
-  Wire2.write(drone_data, 12);
+  Wire2.write(drone_data, 16);
 }
 
 void stringParsing(char data[], int n){

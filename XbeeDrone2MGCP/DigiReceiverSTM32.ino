@@ -77,11 +77,14 @@ void stringParsing(char data[], int n){
 void parser(char data[], int n, int index, int comma_place, int data_type){
   char tempLeft[10];
   char tempRight[10];
+  char tempRight2[10];
   //must clear both temp arrays completely in memory or data will corrupt
   memset(tempLeft,0,sizeof(tempLeft));
-  memset(tempRight,0,sizeof(tempRight)); 
+  memset(tempRight,0,sizeof(tempRight));
+  memset(tempRight2,0,sizeof(tempRight2));
   bool isLeft = true;
   int i = 0;
+  int decimal_counter = 0;
   //Start parsing the numerical values and store to struct
   while(index <= comma_place){
     if (data[index] == '.'){
@@ -92,8 +95,15 @@ void parser(char data[], int n, int index, int comma_place, int data_type){
     if (isLeft){
       tempLeft[i] = data[index];
     }
-    else if (!isLeft){
+    else if (!isLeft && data_type == 2){
       tempRight[i] = data[index];
+    }
+    else if (!isLeft && data_type != 2 && decimal_counter < 3){
+      tempRight[i] = data[index]
+      i = 0; //reset i
+    }
+    else if(!isLeft && data_type != 2 && decimal_counter >=3){
+      tempRight2[i] = data[index];
     }
     i++;
     index++;

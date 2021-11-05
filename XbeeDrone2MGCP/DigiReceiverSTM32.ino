@@ -112,22 +112,26 @@ void parser(char data[], int n, int index, int comma_place, int data_type){
     case 0:
       drone_coor.left_lat = atoi(tempLeft);
       drone_coor.right_lat = atoi(tempRight);
+      drone_coor.right_lat2 = atoi(tempRight2);
       convertByte(drone_coor.left_lat, 0);
       convertByte(drone_coor.right_lat,2);
-      Serial.print(drone_coor.left_lat);Serial.print(".");Serial.println(drone_coor.right_lat);
+      convertByte(drone_coor.right_lat2,4);
+      Serial.print(drone_coor.left_lat);Serial.print(".");Serial.print(drone_coor.right_lat);Serial.println(drone_coor.right_lat2);
       break;
     case 1:
       drone_coor.left_lon = atoi(tempLeft);
       drone_coor.right_lon = atoi(tempRight);
-      convertByte(drone_coor.left_lon,4);
-      convertByte(drone_coor.right_lon,6);
-      Serial.print(drone_coor.left_lon);Serial.print(".");Serial.println(drone_coor.right_lon);
+      drone_coor.right_lon2 = atoi(tempRight2);
+      convertByte(drone_coor.left_lon,6);
+      convertByte(drone_coor.right_lon,8);
+      convertByte(drone_coor.right_lon2,10);
+      Serial.print(drone_coor.left_lon);Serial.print(".");Serial.print(drone_coor.right_lon);Serial.println(drone_coor.right_lon2);
       break;
     case 2:
       drone_coor.left_height = atoi(tempLeft);
       drone_coor.right_height = atoi(tempRight);
-      convertByte(drone_coor.left_height,8);
-      convertByte(drone_coor.right_height,10);
+      convertByte(drone_coor.left_height,12);
+      convertByte(drone_coor.right_height,14);
       Serial.print(drone_coor.left_height);Serial.print(".");Serial.println(drone_coor.right_height);
       break;
   }

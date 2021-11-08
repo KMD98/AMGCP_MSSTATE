@@ -10,6 +10,7 @@ def readingI2Cbus(addr):
     #grab coordinates
     data = bus.read_i2c_block_data(addr,0,19);
     print(data)
+    print(type(data[0]))
     #return ''.join(data)
 
 #def writeRTM(data): #send to real time monitoring sender uncomment when ready

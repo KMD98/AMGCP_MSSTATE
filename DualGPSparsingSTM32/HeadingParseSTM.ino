@@ -11,11 +11,9 @@ int i = 0;
 int turn = 0;
 // end of heading parameters initialization
 //Create some I2C subroutines variables and parameters
-bool newData = true;
-int count = -2;
-String temp_heading;
-byte low;
-byte high;
+long tempHeading;
+byte data[] = {0,0,0,0};
+
 SoftwareSerial serial(PA10,PA9);
 TwoWire Wire2(PB9,PB8);
 void setup() {
@@ -26,25 +24,23 @@ void setup() {
 }
 
 void loop() {
-  if (newData){
-    if (serial.available()) {
-      incoming_char = serial.read();
-      //for the first 4 bytes, we dont need to store it because it's static, just need to make sure it's the message NAV-REPOLSNED
-      if (i < 4 && incoming_char == ackPacket[i]) {
-        i++;
-      }
-      // If the first 4 byte is the message NAV-REPOLSNED, i is incremented and this condition will execute and start storing content of message
-      else if (i > 3) {
-        ackPacket[i] = incoming_char;
-        i++;
-      }
+  if (serial.available()) {
+    incoming_char = serial.read();
+    //for the first 4 bytes, we dont need to store it because it's static, just need to make sure it's the message NAV-REPOLSNED
+    if (i < 4 && incoming_char == ackPacket[i]) {
+      i++;
     }
-    // Once the entire message is stored, run checksum algo
-    if (i > 71) {
-      checksum();
-      //set i back to 0
-      i = 0;
+    // If the first 4 byte is the message NAV-REPOLSNED, i is incremented and this condition will execute and start storing content of message
+    else if (i > 3) {
+      ackPacket[i] = incoming_char;
+      i++;
     }
+  }
+  // Once the entire message is stored, run checksum algo
+  if (i > 71) {
+    checksum();
+    //set i back to 0
+    i = 0;
   }
 }
 
@@ -74,34 +70,16 @@ void parsen() {
   heading = heading / 100000; //get rid of 1e-5 scale based on protocol book
   if (heading > 360) heading = heading - 360;
   if (heading < 0) heading = heading + 360;
+  //temp heading is to be sent. Remember to have master divide by 100 to get the actual decimal placement.
+  tempHeading = heading * 100;
+  data[0] = tempHeading>>24;
+  data[1] = tempHeading>>16;
+  data[2] = tempHeading>>8;
+  data[3] = tempHeading & 0xff;
   // Turn heading double into a string
-  temp_heading ="!" + String(heading,2)+ "!";
-  Serial.print("Heading : ");
-  Serial.println(temp_heading);
+  Serial.print("Heading : ");Serial.println(((data[0]<<24) + (data[1]<<16) + (data[2]<<8) + data[3])/100.0f);
 }
 
 void requestEvent(){
-  newData = false;
-  int data_length = temp_heading.length();
-  if (count == -2){
-    high = data_length>>8;
-    low = data_length & (0xFF);
-    Wire2.write(high);
-    count++;
-  }
-  else if (count == -1){
-    Wire2.write(low);
-    count++;
-  }
-  else if (count >= 0 and count < data_length and temp_heading !=""){
-    Wire2.write(temp_heading[count]);
-    count++;
-    if(count == data_length){
-      count = -2;
-      newData = true;
-      temp_heading = "";// reset to prevent sending the same instance of mgcp_coor (as in a non updated mgcp coor)
-      high = 0;
-      low = 0;
-    }
-  }
+  Wire2.write(data,4);
 }

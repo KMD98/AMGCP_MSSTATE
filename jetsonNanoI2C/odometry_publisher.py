@@ -1,5 +1,8 @@
+#!/usr/bin/env python3
 from smbus import SMBus
 import time
+import rospy
+from ros_essentials_cpp.msg import odometry
 addr_droneCoor = 0x08
 addr_MGCPCoor = 0x09
 addr_heading = 0x07

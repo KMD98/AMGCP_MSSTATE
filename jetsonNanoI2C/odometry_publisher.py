@@ -2,7 +2,7 @@
 from smbus import SMBus
 import time
 import rospy
-from ros_essentials_cpp.msg import GPSRTK
+from ros_essentials_cpp.msg import RTK
 addr_droneCoor = 0x08
 addr_MGCPCoor = 0x09
 addr_heading = 0x07
@@ -86,12 +86,12 @@ def bytetoFloatHeading(temp):
         #bus.write_byte(0x06,data[i]) #address of real time monitor sender
         
 def odometryPub():
-    rospy.init_node('GPSRTK_odometry_node', anonymous = True)
-    pub = rospy.Publisher('GPSRTK_odometry_topic',odometry,queue_size=10)
+    rospy.init_node('RTK_odometry_node', anonymous = True)
+    pub = rospy.Publisher('RTK_odometry_topic',RTK,queue_size=10)
     #loop rate is 1Hz
     rate = rospy.Rate(1)
     while not rospy.is_shutdown():
-        odometry_data = GPSRTK()
+        odometry_data = RTK()
         drone_coor = readingI2CbusDrone(addr_droneCoor)
         #delay between reads to be definite that SDA Has pulled low
         time.sleep(0.005)

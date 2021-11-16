@@ -2,7 +2,7 @@
 from smbus import SMBus
 import time
 import rospy
-from ros_essentials_cpp.msg import odometry
+from ros_essentials_cpp.msg import GPSRTK
 addr_droneCoor = 0x08
 addr_MGCPCoor = 0x09
 addr_heading = 0x07
@@ -84,16 +84,35 @@ def bytetoFloatHeading(temp):
 #def writeRTM(data): #send to real time monitoring sender uncomment when ready
     #for i in range (0,len(data)):
         #bus.write_byte(0x06,data[i]) #address of real time monitor sender
-
-if __name__ == '__main__':
-    while True:
+        
+def odometryPub():
+    rospy.init_node('GPSRTK_odometry_node', anonymous = True)
+    pub = rospy.Publisher('GPSRTK_odometry_topic',odometry,queue_size=10)
+    #loop rate is 1Hz
+    rate = rospy.Rate(1)
+    while not rospy.is_shutdown():
+        odometry_data = GPSRTK()
         drone_coor = readingI2CbusDrone(addr_droneCoor)
         #delay between reads to be definite that SDA Has pulled low
         time.sleep(0.005)
         mgcp_coor = readingI2CBusMGCP(addr_MGCPCoor)
         time.sleep(0.005)
         mgcp_heading = readingI2CBusHeading(addr_heading)
-        print("Drone Coordinates: ", drone_coor)
-        print("MGCP Coordinates: ", mgcp_coor)
-        print("MGCP Heading: ", mgcp_heading)
-        time.sleep(1.0)
+        odometry_data.drone_lat = drone_coor[0]
+        odometry_data.drone_lon = drone_coor[1]
+        odometry_data.drone_height = drone_coor[2]
+        odometry_data.MGCP_lat = mgcp_coor[0]
+        odometry_data.MGCP_lon = mgcp_coor[1]
+        odometry_data.MGCP_height = mgcp_coor[2]
+        odometry_data.MGCP_heading = mgcp_heading
+        rospy.loginfo("I published: ")
+        rospy.loginfo(odometry_data)
+        pub.publish(odometry_data)
+        rate.sleep()
+        
+if __name__ == '__main__':
+    try:
+        odometryPub()
+    except rospy.ROSInterruptException:
+        pass
+

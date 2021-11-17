@@ -26,11 +26,11 @@ class NodeSubscriber:
         self.odometry_data.append(float(RTK_data.MGCP_lat))
         self.odometry_data.append(float(RTK_data.MGCP_lon))
         self.odometry_data.append(float(RTK_data.MGCP_heading))
+        rospy.loginfo(self.odometry_data)
     
     def spin(self):
         while not rospy.is_shutdown():
-            rospy.loginfo(self.odometry_data)
-            
+            #do your subroutine for navigating
 if __name__ == '__main__':
     try:
         navigator = NodeSubscriber()

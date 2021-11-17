@@ -12,17 +12,17 @@ bus = SMBus(1)
 def readingI2CbusDrone(addr):
     #grab coordinates
     temp = bus.read_i2c_block_data(addr,0,19)
-    return bytetoFloatDrone(temp)
+    return bytetoStringDrone(temp)
 
 def readingI2CBusMGCP(addr):
     temp = bus.read_i2c_block_data(addr,0,15)
-    return bytetoFloatMGCP(temp)    
+    return bytetoStringMGCP(temp)    
 
 def readingI2CBusHeading(addr):
     temp = bus.read_i2c_block_data(addr,0,4)
-    return bytetoFloatHeading(temp)
+    return bytetoStringHeading(temp)
 
-def bytetoFloatDrone(temp):
+def bytetoStringDrone(temp):
     data = []
     coor = []
     i = 0
@@ -45,7 +45,7 @@ def bytetoFloatDrone(temp):
         data[2] = "0" + data[2]
     while len(data[5]) < 4:
         data[5] = "0" + data[5]
-    #Now convert to float list
+    #Now convert to string list
     count = 0
     while count <=6:
         if count < 6:
@@ -57,7 +57,7 @@ def bytetoFloatDrone(temp):
     data.clear()
     return coor
 
-def bytetoFloatMGCP(temp):
+def bytetoStringMGCP(temp):
     data = []
     i = 0
     while i <=8:
@@ -78,12 +78,10 @@ def bytetoFloatMGCP(temp):
         data[2] = str(float(data[2])/float(1000.0))
     return data
 
-def bytetoFloatHeading(temp):
+def bytetoStringHeading(temp):
     data = str(float((temp[0]<<24) + (temp[1]<<16) + (temp[2]<<8) + temp[3])/float(100.0))
     return data
-#def writeRTM(data): #send to real time monitoring sender uncomment when ready
-    #for i in range (0,len(data)):
-        #bus.write_byte(0x06,data[i]) #address of real time monitor sender
+
         
 def odometryPub():
     rospy.init_node('RTK_odometry_node', anonymous = True)

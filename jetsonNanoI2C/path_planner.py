@@ -14,8 +14,8 @@ class NodeSubscriber:
         self.node_name = rospy.get_name()
         rospy.loginfo("Started node %s" % self.nodename)
         self.odometry_data = []
-        self.new_message = False
-        self.processing = False
+        self.new_message = False #ensure that navigation code do not execute on already processed data
+        self.processing = False #ensure that callback doesnt change odometry value until navigator is done processing current odometry
         #this node subribes to the RTK_odometry_topic which the odometry publisher publishes to
         rospy.Subscriber("RTK_odometry_topic", RTK, odometry_callback)
         

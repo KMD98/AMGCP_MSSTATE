@@ -44,7 +44,7 @@ class NodeSubscriber:
     
     def spin(self):
         while not rospy.is_shutdown():
-            if new_message:
+            if self.new_message:
                 self.new_message = False #dont iterate again until new data comes in
                 self.processing = True #do not use new data until previous data has been processed, this is the time dependent section
                 #subroutines for navigating that is time dependent.

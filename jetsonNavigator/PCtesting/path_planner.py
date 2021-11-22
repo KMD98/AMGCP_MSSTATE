@@ -60,7 +60,7 @@ class NodeSubscriber:
         c = 2 * atan2(sqrt(a), sqrt(1 - a))
         self.displacement = self.R * c  * 100000.0# Distance between MGCP and waypoint in cm. Goal is to reduce to <10cm
         self.waypoint_angle = degrees(atan2((sin(dLon)*cos(rLat2)),(cos(rLat1)*sin(rLat2)-sin(rLat1)*cos(rLat2)*cos(dLon)))) #angle between north and waypoint or MGCP desired angle
-        self.heading_error = self.waypoint_angle - self.odometry_data[4] #degree that MGCP must turn to get to desired waypoint_angle
+        self.heading_error = self.waypoint_angle - self.odometry_data[4] #degree that MGCP must turn to get to desired waypoint_angle. - is counterclock, + is clockwise
         rospy.loginfo("displacement to goal: %f cm", self.displacement)
         rospy.loginfo("waypoints angle/azimuth: %f degrees", self.waypoint_angle)
         rospy.loginfo("heading error: %f degrees", self.heading_error)

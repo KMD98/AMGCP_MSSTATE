@@ -64,6 +64,16 @@ class NodeSubscriber:
         rospy.loginfo("displacement to goal: %f cm", self.displacement)
         rospy.loginfo("waypoints angle/azimuth: %f degrees", self.waypoint_angle)
         rospy.loginfo("heading error: %f degrees", self.heading_error)
+     
+    def getDisplacement(self,lat1,lon1,lat2,lon2):
+        dLat = radians(lat2 - lat1)
+        dLon = radians(lon2 - lon1)
+        rLat1 = radians(lat1)
+        rLat2 = radians(lat2)
+        #haversine
+        a = sin(dLat / 2) * sin(dLat / 2) + cos(rLat1) * cos(rLat2) * sin(dLon / 2) * sin(dLon / 2)
+        c = 2 * atan2(sqrt(a), sqrt(1 - a))
+        return self.R * c * 100000.0 #displacement in cm
 
     def spin(self):
         while not rospy.is_shutdown():

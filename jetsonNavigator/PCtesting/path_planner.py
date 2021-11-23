@@ -51,15 +51,8 @@ class NodeSubscriber:
     def pathTracker(self, lat1, lon1, lat2, lon2):
         #this function calculate displacement between goal and robot position
         #it also calculate the azimuth, which is the angle between goal position and true north
-        dLat = radians(lat2 - lat1)
-        dLon = radians(lon2 - lon1)
-        rLat1 = radians(lat1)
-        rLat2 = radians(lat2)
-        #haversine
-        a = sin(dLat / 2) * sin(dLat / 2) + cos(rLat1) * cos(rLat2) * sin(dLon / 2) * sin(dLon / 2)
-        c = 2 * atan2(sqrt(a), sqrt(1 - a))
-        self.displacement = self.R * c  * 100000.0# Distance between MGCP and waypoint in cm. Goal is to reduce to <10cm
-        self.waypoint_angle = degrees(atan2((sin(dLon)*cos(rLat2)),(cos(rLat1)*sin(rLat2)-sin(rLat1)*cos(rLat2)*cos(dLon)))) #angle between north and waypoint or MGCP desired angle
+        self.displacement = self.getDisplacement(lat1,lon1,lat2,lon2) #Distance between MGCP and waypoint in cm. Goal is to reduce to <10cm
+        self.waypoint_angle = self.getWaypointAngle(lat1,lon1,lat2,lon2) #angle between north and waypoint or MGCP desired angle
         self.heading_error = self.waypoint_angle - self.odometry_data[4] #degree that MGCP must turn to get to desired waypoint_angle. - is counterclock, + is clockwise
         rospy.loginfo("displacement to goal: %f cm", self.displacement)
         rospy.loginfo("waypoints angle/azimuth: %f degrees", self.waypoint_angle)
@@ -74,7 +67,14 @@ class NodeSubscriber:
         a = sin(dLat / 2) * sin(dLat / 2) + cos(rLat1) * cos(rLat2) * sin(dLon / 2) * sin(dLon / 2)
         c = 2 * atan2(sqrt(a), sqrt(1 - a))
         return self.R * c * 100000.0 #displacement in cm
-
+    
+    def getWaypointAngle(self,lat1,lon1,lat2,lon2):
+        dLat = radians(lat2 - lat1)
+        dLon = radians(lon2 - lon1)
+        rLat1 = radians(lat1)
+        rLat2 = radians(lat2)
+        return degrees(atan2((sin(dLon)*cos(rLat2)),(cos(rLat1)*sin(rLat2)-sin(rLat1)*cos(rLat2)*cos(dLon))))
+    
     def spin(self):
         while not rospy.is_shutdown():
             if self.new_message:

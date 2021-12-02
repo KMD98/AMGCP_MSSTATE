@@ -21,10 +21,11 @@ class NodeSubscriber:
         #If new WP are set then all ROS nodes need to be terminated and reconnected before operation. ALso make the path to the file is correct
         self.latWP=[]
         self.lonWP=[]
+        self.drone_displacement = 0 #drone displacement to WP
         self.R = 6378.0 #radius of the earth in km
         self.waypoint_angle = 0 #azimuth in degrees
         self.heading_error = 0 #angle between waypoint and robot heading in degrees
-        self.displacement = 0 #distance between two points in km
+        self.MGCP_displacement = 0 #MGCP distance to WP
         with open('/home/khadan/catkin_ws/src/ros_essentials_cpp/src/assignment/gcp_xpath.txt','r') as fhandle:
             for x_coordinates in fhandle:
                 self.latWP.append(float(x_coordinates))
@@ -51,10 +52,10 @@ class NodeSubscriber:
     def pathTracker(self, lat1, lon1, lat2, lon2):
         #this function calculate displacement between goal and robot position
         #it also calculate the azimuth, which is the angle between goal position and true north
-        self.displacement = self.getDisplacement(lat1,lon1,lat2,lon2) #Distance between MGCP and waypoint in cm. Goal is to reduce to <10cm
+        self.MGCP_displacement = self.getDisplacement(lat1,lon1,lat2,lon2) #Distance between MGCP and waypoint in cm. Goal is to reduce to <10cm
         self.waypoint_angle = self.getWaypointAngle(lat1,lon1,lat2,lon2) #angle between north and waypoint or MGCP desired angle
         self.heading_error = self.waypoint_angle - self.odometry_data[4] #degree that MGCP must turn to get to desired waypoint_angle. - is counterclock, + is clockwise
-        rospy.loginfo("displacement to goal: %f cm", self.displacement)
+        rospy.loginfo("displacement to goal: %f cm", self.MGCP_displacement)
         rospy.loginfo("waypoints angle/azimuth: %f degrees", self.waypoint_angle)
         rospy.loginfo("heading error: %f degrees", self.heading_error)
      

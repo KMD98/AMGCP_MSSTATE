@@ -49,11 +49,12 @@ class NodeSubscriber:
             #rospy.loginfo(self.odometry_data)  #uncomment to see data from sensor suite.
     
 
-    def pathTracker(self, lat1, lon1, lat2, lon2):
+    def pathTracker(self, MGCP_lat, MGCP_lon, WP_lat, WP_lon, lat_drone, lon_drone):
         #this function calculate displacement between goal and robot position
         #it also calculate the azimuth, which is the angle between goal position and true north
-        self.MGCP_displacement = self.getDisplacement(lat1,lon1,lat2,lon2) #Distance between MGCP and waypoint in cm. Goal is to reduce to <10cm
-        self.waypoint_angle = self.getWaypointAngle(lat1,lon1,lat2,lon2) #angle between north and waypoint or MGCP desired angle
+        self.MGCP_displacement = self.getDisplacement(MGCP_lat,MGCP_lon,WP_lat,WP_lon) #Distance between MGCP and waypoint in cm. Goal is to reduce to <10cm
+        self.drone_displacement = self.getDisplacement(lat_drone,lon_drone,WP_lat,WP_lon)
+        self.waypoint_angle = self.getWaypointAngle(MGCP_lat,MGCP_lon,WP_lat,WP_lon) #angle between north and waypoint or MGCP desired angle
         self.heading_error = self.waypoint_angle - self.odometry_data[4] #degree that MGCP must turn to get to desired waypoint_angle. - is counterclock, + is clockwise
         rospy.loginfo("displacement to goal: %f cm", self.MGCP_displacement)
         rospy.loginfo("waypoints angle/azimuth: %f degrees", self.waypoint_angle)
@@ -82,7 +83,7 @@ class NodeSubscriber:
                 self.new_message = False #dont iterate again until new data comes in
                 self.processing = True #do not use new data until previous data has been processed, this is the time dependent section
                 #subroutines for navigating that is time dependent.
-                self.pathTracker(88.13,-95.234,89.154,-95.1230) #processing with pathtracker.
+                self.pathTracker(88.13,-95.234,89.154,-95.1230, 88.5393,-95.192139) #processing with pathtracker.
                 self.processing = False #processing is done, new data can be collected. Put at the end of this code section
             
 if __name__ == '__main__':

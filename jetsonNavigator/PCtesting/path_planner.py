@@ -109,7 +109,7 @@ class NodeSubscriber:
                             self.is_imaged_by_drone(self.odometry_data[0],self.odometry_data[1],self.latWP[self.counter],self.lonWP[self.counter])
                             if self.counter == (len(latWP) - 1):
                                 break
-                    elif abs(self.heading_error >= 1):
+                    elif abs(self.heading_error) >= 1:
                         #send command to turn the wheel to lower motor with self.heading_error as the value to turn and sign of it as direction cw or c
                 self.processing = False #processing is done, new data can be collected. Put at the end of this code section
             

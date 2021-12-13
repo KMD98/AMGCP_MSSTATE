@@ -81,11 +81,11 @@ class NodeSubscriber:
         rLat2 = radians(lat2)
         return degrees(atan2((sin(dLon)*cos(rLat2)),(cos(rLat1)*sin(rLat2)-sin(rLat1)*cos(rLat2)*cos(dLon))))
     
-    def is_imaged_by_drone(self,lat_drone,lon_drone,latWP,lonWP):
+    def is_imaged_by_drone(self):
         if self.drone_displacement < 50.0:
             self.drone_at_WP = True
         if self.drone_at_WP:
-            if drone_displacement >= self.camera_footprint: #means that the drone has imaged and is at least a camera footprint away
+            if self.drone_displacement >= self.camera_footprint: #means that the drone has imaged and is at least a camera footprint away
                 self.counter = self.counter + 1
                 self.drone_at_WP = False
                 return True
@@ -106,7 +106,7 @@ class NodeSubscriber:
                         elif self.MGCP_displacement < 50.0:
                             #send brake command
                             ####insert brake code here####
-                            self.is_imaged_by_drone(self.odometry_data[0],self.odometry_data[1],self.latWP[self.counter],self.lonWP[self.counter])
+                            self.is_imaged_by_drone()
                             if self.counter == (len(latWP) - 1):
                                 break
                     elif abs(self.heading_error) >= 1:

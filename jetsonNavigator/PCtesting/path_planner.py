@@ -81,7 +81,7 @@ class NodeSubscriber:
         rLat2 = radians(lat2)
         return degrees(atan2((sin(dLon)*cos(rLat2)),(cos(rLat1)*sin(rLat2)-sin(rLat1)*cos(rLat2)*cos(dLon))))
     
-    def is_imaged_by_drone(lat_drone,lon_drone,latWP,lonWP):
+    def is_imaged_by_drone(self,lat_drone,lon_drone,latWP,lonWP):
         if self.drone_displacement < 50.0:
             self.drone_at_WP = True
         if self.drone_at_WP:

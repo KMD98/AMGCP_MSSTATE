@@ -2,19 +2,13 @@
 #include <Wire.h>
 // All parameters to parse headings
 char c;
-double lat;
-double lon;
-double hMSL;
-double ground_speed;
 byte CK_A = 0, CK_B = 0;
 byte incoming_char;
-
 byte ackPacket[100] = {0xB5, 0x62, 0x01, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 int i = 0;
-int turn = 0;
 // end of heading parameters initialization
 //Create some I2C subroutines variables and parameters
-byte data[] = {0,0,0,0};
+byte data[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
 SoftwareSerial serial(PA10,PA9);
 TwoWire Wire2(PB9,PB8);
@@ -65,38 +59,35 @@ void checksum() {
 }
 
 void parsen() {
-  lat  =  (long)ackPacket[24 + 6] ;
-  lat += (long)ackPacket[25 + 6] << 8;
-  lat += (long)ackPacket[26 + 6] << 16 ;
-  lat += (long)ackPacket[27 + 6] << 24 ;
-  lon  =  (long)ackPacket[28 + 6] ;
-  lon += (long)ackPacket[29 + 6] << 8;
-  lon += (long)ackPacket[30 + 6] << 16 ;
-  lon += (long)ackPacket[31 + 6] << 24 ;
-  hMSL  =  (long)ackPacket[36 + 6] ;
-  hMSL += (long)ackPacket[37 + 6] << 8;
-  hMSL += (long)ackPacket[38 + 6] << 16 ;
-  hMSL += (long)ackPacket[39 + 6] << 24 ;
-  ground_speed  =  (long)ackPacket[60 + 6] ;
-  ground_speed += (long)ackPacket[61 + 6] << 8;
-  ground_speed += (long)ackPacket[62 + 6] << 16 ;
-  ground_speed += (long)ackPacket[63 + 6] << 24 ;
-  //heading = heading / 10000000; //get rid of 1e-5 scale based on protocol book
-  Serial.println(lat); //Decimal need to move 7 to the left
-  Serial.println(lon); //Decimal need to move 7 to the left
-  Serial.println(hMSL); //Decimal need to move 3 to the left because value is in mm
-  Serial.println(ground_speed); //Decimal need to move 3 to the left because values is in mm
-  Serial.println("ends");
-  /*//temp heading is to be sent. Remember to have master divide by 100 to get the actual decimal placement.
-  tempHeading = heading * 100;
-  data[0] = tempHeading>>24;
-  data[1] = tempHeading>>16;
-  data[2] = tempHeading>>8;
-  data[3] = tempHeading & 0xff;
-  // Turn heading double into a string
-  Serial.print("Heading : ");Serial.println(((data[0]<<24) + (data[1]<<16) + (data[2]<<8) + data[3])/100.0f);*/
+  //Get latitude with msbyte in last element. Value is multipled 10e-7. Decimal need to be moved 7 to the left
+  data[0] = (long)ackPacket[24 + 6] ;
+  data[1] = (long)ackPacket[25 + 6];
+  data[2] = (long)ackPacket[26 + 6];
+  data[3] = (long)ackPacket[27 + 6];
+  //Get longitude with msbyte in last element. Value is multipled 10e-7. Decimal need to be moved 7 to the left
+  data[4] =  (long)ackPacket[28 + 6];
+  data[5] = (long)ackPacket[29 + 6];
+  data[6] = (long)ackPacket[30 + 6];
+  data[7]= (long)ackPacket[31 + 6];
+  //Get hMSL with msbyte in last element. Value is in mm. Decimal need to move 3 to the left because value is in mm
+  data[8]  =  (long)ackPacket[36 + 6];
+  data[9]= (long)ackPacket[37 + 6];
+  data[10]= (long)ackPacket[38 + 6];
+  data[11]= (long)ackPacket[39 + 6];
+  //get GroundSpeed with msbyte in last element. Value is in mm/s. Decimal need to move 3 to the left because value is in mm
+  data[12]  =  (long)ackPacket[60 + 6];
+  data[13]= (long)ackPacket[61 + 6];
+  data[14]= (long)ackPacket[62 + 6];
+  data[15]= (long)ackPacket[63 + 6];
+  //Print data
+  Serial.print("Latitude: ");Serial.println(((data[0]) + (data[1]<<8) + (data[2]<<16) + (data[3]<<24)));
+  Serial.print("Longitude: ");Serial.println(((data[4]) + (data[5]<<8) + (data[6]<<16) + (data[7]<<24)));
+  Serial.print("hMSL: ");Serial.println(((data[8]) + (data[9]<<8) + (data[10]<<16) + (data[11]<<24)));
+  Serial.print("Ground Speed: ");Serial.println(((data[12]) + (data[13]<<8) + (data[14]<<16) + (data[15]<<24)));
+
+
 }
 
 void requestEvent(){
-  Wire2.write(data,4);
+  Wire2.write(data,16);
 }

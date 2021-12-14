@@ -1,1 +1,10 @@
 deploy these configuration via u-center app on appropriate gps (3 gps in total)
+Note that these files are 1Hz. Please change RATE setting to 100ms (10Hz)
+Please disable REPOLNED message on RTK2Blite and POSLLH message on RTK2Blite on UART1.
+Please enable NAV-PVT message on RTK2Blite UART1 and make sure RTCM messages are also enabled on UART1.
+LEAVE RTK2BLITE UART2 ALONE BECAUSE THAT IS THE RTCM RECEIVER FROM BASE STATION
+Note that RTK2B UART1 export only NAV-REPOSLNED but the config file has NAV-PVT and NAV-REPOLSNED on UART1.
+Please DISABLE NAV-REPOLSNED ON UART1.
+simpleRTK WEBSITE RECOMMENDS USING 10Hz CONFIG FILES BUT THEY HAVE NAV-PVT and NAV-REPOLSNED BOTH ON UART1 of RTK2B.
+WE WANT TO SIMULTANEOUSLY GRAB NAV-PVT AND HEADING FROM REPOLSNED, THIS IS WHY WE HAVE TWO BLACK PILL TO DO PARALLEL PROCESSING
+FROM EACH RTK2B (RELPOSNED heading) AAND RTK2BLITE(NAV PVT position and speed).

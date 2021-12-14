@@ -15,7 +15,7 @@ TwoWire Wire2(PB9,PB8);
 void setup() {
   Serial.begin(115200);
   serial.begin(115200);
-  Wire2.begin(0x7);
+  Wire2.begin(0x9);
   Wire2.onRequest(requestEvent);
 }
 

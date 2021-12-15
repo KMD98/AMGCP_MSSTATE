@@ -88,8 +88,8 @@ def odometryPub():
         mgcp_coor = readingI2CBusMGCP(addr_MGCPCoor)
         time.sleep(0.005)
         mgcp_heading = readingI2CBusHeading(addr_heading)
-        odometry_data.drone_lat = drone_coor[0]
-        odometry_data.drone_lon = drone_coor[1]
+        odometry_data.drone_lat = drone_coor[0] #y axis
+        odometry_data.drone_lon = drone_coor[1] #x-axis
         odometry_data.drone_height = drone_coor[2]
         odometry_data.MGCP_lat = mgcp_coor[0]
         odometry_data.MGCP_lon = mgcp_coor[1]

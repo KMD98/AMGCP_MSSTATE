@@ -60,22 +60,14 @@ def bytetoStringDrone(temp):
 def bytetoStringMGCP(temp):
     data = []
     i = 0
-    while i <=8:
-        data.append((temp[i]<<24) + (temp[i+1]<<16) +(temp[i+2]<<8) + temp[i+3])
+    while i <=12:
+        data.append((temp[i]) + (temp[i+1]<<8) +(temp[i+2]<<16) + (temp[i+3]<<24))
         i+=4
     #Divide lat and lon data by 10000000.0f and height by 1000.0f to get decimal place
-    if temp[12] == 1:
-        data[0] = str(-1.0*(float(data[0])/float(10000000.0)))
-    elif temp[12] == 0:
-        data[0] = str((float(data[0])/float(10000000.0)))
-    if temp[13] == 1:
-        data[1] = str(-1.0*(float(data[1])/float(10000000.0)))
-    elif temp[13] == 0:
-        data[1] = str((float(data[1])/float(10000000.0)))
-    if temp[14] == 1:
-        data[2] = str(-1.0*(float(data[2])/float(1000.0)))        
-    elif temp[14] == 0:
-        data[2] = str(float(data[2])/float(1000.0))
+    data[0] = str((float(data[0])/float(10000000.0)))
+    data[1] = str((float(data[1])/float(10000000.0)))      
+    data[2] = str(float(data[2])/float(1000.0))
+    data[3] = str(float(data[3])/float(1000.0))
     return data
 
 def bytetoStringHeading(temp):
@@ -86,8 +78,8 @@ def bytetoStringHeading(temp):
 def odometryPub():
     rospy.init_node('RTK_odometry_node', anonymous = True)
     pub = rospy.Publisher('RTK_odometry_topic',RTK,queue_size=10)
-    #loop rate is 1Hz
-    rate = rospy.Rate(1)
+    #loop rate is 5Hz
+    rate = rospy.Rate(5)
     while not rospy.is_shutdown():
         odometry_data = RTK()
         drone_coor = readingI2CbusDrone(addr_droneCoor)

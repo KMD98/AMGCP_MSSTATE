@@ -8,7 +8,7 @@ byte ackPacket[100] = {0xB5, 0x62, 0x01, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0
 int i = 0;
 // end of heading parameters initialization
 //Create some I2C subroutines variables and parameters
-byte data[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+byte data[19] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
 SoftwareSerial serial(PA10,PA9);
 TwoWire Wire2(PB9,PB8);
@@ -89,5 +89,5 @@ void parsen() {
 }
 
 void requestEvent(){
-  Wire2.write(data,16);
+  Wire2.write(data,19);
 }

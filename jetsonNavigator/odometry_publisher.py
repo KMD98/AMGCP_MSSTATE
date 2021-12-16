@@ -15,7 +15,7 @@ def readingI2CbusDrone(addr):
     return bytetoStringDrone(temp)
 
 def readingI2CBusMGCP(addr):
-    temp = bus.read_i2c_block_data(addr,0,16)
+    temp = bus.read_i2c_block_data(addr,0,19)
     return bytetoStringMGCP(temp)    
 
 def readingI2CBusHeading(addr):
@@ -61,7 +61,7 @@ def bytetoStringMGCP(temp):
     data = []
     i = 0
     while i <=12:
-        data.append((temp[i]) + (temp[i+1]<<8) +(temp[i+2]<<16) + (temp[i+3]<<24))
+        data.append((temp[i]<<24) + (temp[i+1]<<16) +(temp[i+2]<<8) + temp[i+3])
         i+=4
     #Divide lat and lon data by 10000000.0f and height by 1000.0f to get decimal place
     data[0] = str((float(data[0])/float(10000000.0)))
@@ -94,6 +94,7 @@ def odometryPub():
         odometry_data.MGCP_lat = mgcp_coor[0]
         odometry_data.MGCP_lon = mgcp_coor[1]
         odometry_data.MGCP_height = mgcp_coor[2]
+        odometry_data.MGCP_groundSpeed = mgcp_coor[3]
         odometry_data.MGCP_heading = mgcp_heading
         rospy.loginfo("I published: ")
         rospy.loginfo(odometry_data)

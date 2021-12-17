@@ -15,7 +15,7 @@ def readingI2CbusDrone(addr):
     return bytetoStringDrone(temp)
 
 def readingI2CBusMGCP(addr):
-    temp = bus.read_i2c_block_data(addr,0,15)
+    temp = bus.read_i2c_block_data(addr,0,19)
     return bytetoStringMGCP(temp)    
 
 def readingI2CBusHeading(addr):
@@ -60,22 +60,25 @@ def bytetoStringDrone(temp):
 def bytetoStringMGCP(temp):
     data = []
     i = 0
-    while i <=8:
+    #the order is lat,lon,height,groundspeed
+    while i <=12:
         data.append((temp[i]<<24) + (temp[i+1]<<16) +(temp[i+2]<<8) + temp[i+3])
         i+=4
     #Divide lat and lon data by 10000000.0f and height by 1000.0f to get decimal place
-    if temp[12] == 1:
-        data[0] = str(-1.0*(float(data[0])/float(10000000.0)))
-    elif temp[12] == 0:
+    if temp[16] == 1:
+        data[0] = str(-1*(float(data[0])/float(10000000.0)))
+    elif temp[16] == 0:
         data[0] = str((float(data[0])/float(10000000.0)))
-    if temp[13] == 1:
-        data[1] = str(-1.0*(float(data[1])/float(10000000.0)))
-    elif temp[13] == 0:
-        data[1] = str((float(data[1])/float(10000000.0)))
-    if temp[14] == 1:
-        data[2] = str(-1.0*(float(data[2])/float(1000.0)))        
-    elif temp[14] == 0:
+    if temp[17] == 1:
+        data[1] = str(-1*(float(data[1])/float(10000000.0)))      
+    elif temp[17] == 0:
+        data[1] = str((float(data[1])/float(10000000.0)))      
+    if temp[18] == 1:
+        data[2] = str(-1*(float(data[2])/float(1000.0)))
+    if temp[18] == 0:
         data[2] = str(float(data[2])/float(1000.0))
+    #ground speed cannot be negative so no condition statement needed here
+    data[3] = str(float(data[3])/float(1000.0))
     return data
 
 def bytetoStringHeading(temp):
@@ -86,8 +89,8 @@ def bytetoStringHeading(temp):
 def odometryPub():
     rospy.init_node('RTK_odometry_node', anonymous = True)
     pub = rospy.Publisher('RTK_odometry_topic',RTK,queue_size=10)
-    #loop rate is 1Hz
-    rate = rospy.Rate(1)
+    #loop rate is 5Hz
+    rate = rospy.Rate(5)
     while not rospy.is_shutdown():
         odometry_data = RTK()
         drone_coor = readingI2CbusDrone(addr_droneCoor)
@@ -96,12 +99,13 @@ def odometryPub():
         mgcp_coor = readingI2CBusMGCP(addr_MGCPCoor)
         time.sleep(0.005)
         mgcp_heading = readingI2CBusHeading(addr_heading)
-        odometry_data.drone_lat = drone_coor[0]
-        odometry_data.drone_lon = drone_coor[1]
+        odometry_data.drone_lat = drone_coor[0] #y axis
+        odometry_data.drone_lon = drone_coor[1] #x-axis
         odometry_data.drone_height = drone_coor[2]
         odometry_data.MGCP_lat = mgcp_coor[0]
         odometry_data.MGCP_lon = mgcp_coor[1]
         odometry_data.MGCP_height = mgcp_coor[2]
+        odometry_data.MGCP_groundSpeed = mgcp_coor[3]
         odometry_data.MGCP_heading = mgcp_heading
         rospy.loginfo("I published: ")
         rospy.loginfo(odometry_data)

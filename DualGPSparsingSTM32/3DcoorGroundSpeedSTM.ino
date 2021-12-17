@@ -8,14 +8,17 @@ byte ackPacket[100] = {0xB5, 0x62, 0x01, 0x07, 0x00, 0x00, 0x00, 0x00, 0x00, 0x0
 int i = 0;
 // end of heading parameters initialization
 //Create some I2C subroutines variables and parameters
-byte data[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
-
+byte data[19] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+long temp_lat;
+long temp_lon;
+long temp_hMSL;
+long temp_gs;
 SoftwareSerial serial(PA10,PA9);
 TwoWire Wire2(PB9,PB8);
 void setup() {
   Serial.begin(115200);
   serial.begin(115200);
-  Wire2.begin(0x7);
+  Wire2.begin(0x9);
   Wire2.onRequest(requestEvent);
 }
 
@@ -60,34 +63,60 @@ void checksum() {
 
 void parsen() {
   //Get latitude with msbyte in last element. Value is multipled 10e-7. Decimal need to be moved 7 to the left
-  data[0] = (long)ackPacket[24 + 6] ;
-  data[1] = (long)ackPacket[25 + 6];
-  data[2] = (long)ackPacket[26 + 6];
-  data[3] = (long)ackPacket[27 + 6];
+  temp_lon = (long)ackPacket[24 + 6] + ((long)ackPacket[25 + 6]<<8) + ((long)ackPacket[26 + 6]<<16) + ((long)ackPacket[27 + 6]<<24);
   //Get longitude with msbyte in last element. Value is multipled 10e-7. Decimal need to be moved 7 to the left
-  data[4] =  (long)ackPacket[28 + 6];
-  data[5] = (long)ackPacket[29 + 6];
-  data[6] = (long)ackPacket[30 + 6];
-  data[7]= (long)ackPacket[31 + 6];
+  temp_lat = (long)ackPacket[28 + 6] + ((long)ackPacket[29 + 6]<<8) + ((long)ackPacket[30 + 6]<<16) + ((long)ackPacket[31 + 6]<<24);
   //Get hMSL with msbyte in last element. Value is in mm. Decimal need to move 3 to the left because value is in mm
-  data[8]  =  (long)ackPacket[36 + 6];
-  data[9]= (long)ackPacket[37 + 6];
-  data[10]= (long)ackPacket[38 + 6];
-  data[11]= (long)ackPacket[39 + 6];
+  temp_hMSL = (long)ackPacket[36 + 6] + ((long)ackPacket[37 + 6]<<8) + ((long)ackPacket[38 + 6]<<16) + ((long)ackPacket[39 + 6]<<24);
   //get GroundSpeed with msbyte in last element. Value is in mm/s. Decimal need to move 3 to the left because value is in mm
-  data[12]  =  (long)ackPacket[60 + 6];
-  data[13]= (long)ackPacket[61 + 6];
-  data[14]= (long)ackPacket[62 + 6];
-  data[15]= (long)ackPacket[63 + 6];
-  //Print data
-  Serial.print("Latitude: ");Serial.println(((data[0]) + (data[1]<<8) + (data[2]<<16) + (data[3]<<24)));
-  Serial.print("Longitude: ");Serial.println(((data[4]) + (data[5]<<8) + (data[6]<<16) + (data[7]<<24)));
-  Serial.print("hMSL: ");Serial.println(((data[8]) + (data[9]<<8) + (data[10]<<16) + (data[11]<<24)));
-  Serial.print("Ground Speed: ");Serial.println(((data[12]) + (data[13]<<8) + (data[14]<<16) + (data[15]<<24)));
+  temp_gs = (long)ackPacket[60 + 6] + ((long)ackPacket[61 + 6]<<8) + ((long)ackPacket[62 + 6]<<16) + ((long)ackPacket[63 + 6]<<24);
+  if (temp_lat < 0){
+    data[16] = 1;
+  }
+  else if (temp_lat >= 0){
+    data[16] = 0;
+  }
+  if (temp_lon < 0){
+    data[17] = 1;
+  }
+  else if (temp_lon >= 0){
+    data[17] = 0;
+  }
+  if (temp_hMSL < 0){
+    data[18] = 1;
+  }
+  else if (temp_hMSL >= 0){
+    data[18] = 0;
+  }
+  temp_lat = abs(temp_lat);
+  temp_lon = abs(temp_lon);
+  temp_hMSL = abs(temp_hMSL);
+  //Initialize I2C data array
+  data[0] = temp_lat >> 24;
+  data[1] = temp_lat >> 16;
+  data[2] = temp_lat >> 8;
+  data[3] = temp_lat & 0xff;
+  data[4] = temp_lon >> 24;
+  data[5] = temp_lon >> 16;
+  data[6] = temp_lon >> 8;
+  data[7] = temp_lon & 0xff;
+  data[8] = temp_hMSL >> 24;
+  data[9] = temp_hMSL >> 16;
+  data[10] = temp_hMSL >> 8;
+  data[11] = temp_hMSL & 0xff;
+  data[12]= temp_gs >> 24;
+  data[13]= temp_gs >> 16;
+  data[14]= temp_gs >> 8;
+  data[15]= temp_gs & 0xff;
+  //Print data for debugging, uncomment to see. Make sure to comment out before deployment.
+  /*Serial.print("Latitude: ");Serial.print(((data[0]<<24) + (data[1]<<16) + (data[2]<<8) + data[3]));Serial.print(" The sign is: ");Serial.println(data[16]);
+  Serial.print("Longitude: ");Serial.print(((data[4]<<24) + (data[5]<<16) + (data[6]<<8) + data[7]));Serial.print(" The sign is: ");Serial.println(data[17]);
+  Serial.print("hMSL: ");Serial.print(((data[8]<<24) + (data[9]<<16) + (data[10]<<8) + data[11]));Serial.print(" The sign is: ");Serial.println(data[18]);
+  Serial.print("Ground Speed: ");Serial.println(((data[12]<<24) + (data[13]<<16) + (data[14]<<8) + data[15]));*/
 
 
 }
 
 void requestEvent(){
-  Wire2.write(data,16);
+  Wire2.write(data,19);
 }

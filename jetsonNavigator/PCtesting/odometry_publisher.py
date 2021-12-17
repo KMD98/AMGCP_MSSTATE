@@ -15,7 +15,7 @@ def readingI2CbusDrone(addr):
     return bytetoStringDrone(temp)
 
 def readingI2CBusMGCP(addr):
-    temp = bus.read_i2c_block_data(addr,0,15)
+    temp = bus.read_i2c_block_data(addr,0,19)
     return bytetoStringMGCP(temp)    
 
 def readingI2CBusHeading(addr):

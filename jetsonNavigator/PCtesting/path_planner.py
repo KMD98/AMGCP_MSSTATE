@@ -32,10 +32,10 @@ class NodeSubscriber:
         self.MGCP_displacement = 0 #MGCP distance to WP
         with open('/home/khadan/catkin_ws/src/ros_essentials_cpp/src/assignment/gcp_xpath.txt','r') as fhandle:
             for x_coordinates in fhandle:
-                self.latWP.append(float(x_coordinates))
+                self.lonWP.append(float(x_coordinates))
         with open('/home/khadan/catkin_ws/src/ros_essentials_cpp/src/assignment/gcp_ypath.txt','r') as fhandle:
             for y_coordinates in fhandle:
-                self.lonWP.append(float(y_coordinates))
+                self.latWP.append(float(y_coordinates))
         #this node subribes to the RTK_odometry_topic which the odometry publisher publishes to
         rospy.Subscriber("RTK_odometry_topic", RTK, self.odometry_callback)
         

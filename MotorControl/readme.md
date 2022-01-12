@@ -1,0 +1,1 @@
+This is to control NPC brushed 24V T74 motors with automation direct 10x encoders using SABERTOOTH 60X2 driver. The driver does not have a built in PID but it does have an automated PWM. This code use encoder from the motor as the feedback for the PID algoright but the algorithm does not directly output a PWM wave.

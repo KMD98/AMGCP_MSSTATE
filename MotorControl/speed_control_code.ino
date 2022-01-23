@@ -65,7 +65,7 @@ void loop() {
   v2Prev = v2;
 
   // Set a target
-  float vt = 100*(sin(currT/1e6)>0);
+  float vt = 100*(sin(currT/1e6)>0); // Ours is 50rpm, 
 
   // Compute the control signal u
   float kp = 5;

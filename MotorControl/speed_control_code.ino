@@ -80,7 +80,7 @@ void loop() {
   if (u<0){
     dir = -1;
   }
-  int pwr = (int) fabs(u);
+  int pwr = (int) fabs(u); //We grab the magnitude of u because signs only show direction of voltage.
   if(pwr > 255){
     pwr = 255;
   }

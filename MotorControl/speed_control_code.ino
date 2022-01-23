@@ -55,8 +55,8 @@ void loop() {
   prevT = currT;
 
   // Convert count/s to RPM
-  float v1 = velocity1/600.0*60.0;
-  float v2 = velocity2/600.0*60.0;
+  float v1 = velocity1/600.0*60.0; // 600 is per this example. Ours is 1 revolution of motor shaft per 256 pulses or count and 1/20 revolution at geared shaft per 1 revolution of motor shaft. That gives 5120 instead of 600.
+  float v2 = velocity2/600.0*60.0; // The units stochoimetry is pulses/second * 1 revoMotorShaft/256 Pulses * 1 revoGearedShaft/20 revoMotorShaft = revoGearedShaft/second * 60 second/min = rpm
 
   // Low-pass filter (25 Hz cutoff)
   v1Filt = 0.854*v1Filt + 0.0728*v1 + 0.0728*v1Prev;

@@ -126,7 +126,7 @@ void readEncoder(){
   }
   pos_i = pos_i + increment;
 
-  // Compute velocity with method 2
+  // Compute velocity with method 2. This method is really bad because if there is no interrupt...we cannot calculate speed. Do not use method 2.
   long currT = micros();
   float deltaT = ((float) (currT - prevT_i))/1.0e6;
   velocity_i = increment/deltaT;

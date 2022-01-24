@@ -1,12 +1,13 @@
 #include <util/atomic.h>
+#include <SoftwareSerial.h>
+#include <Sabertooth.h>
 
 // Pins
-#define ENCA 2
-#define ENCB 3
-#define PWM 5
-#define IN1 6
-#define IN2 7
-
+#define ENCA 3
+#define ENCB 4
+#define PWM 8
+SiftwareSerial SWSerial(NOT_A_PIN, PWM);//TX on pin 8 to Sabertooth
+Sabertooth ST(128,SWSerial);
 // globals
 long prevT = 0;
 int posPrev = 0;
@@ -25,13 +26,10 @@ float eintegral = 0;
 
 void setup() {
   Serial.begin(115200);
-
+  SW.Serial.begin(9600);
+  ST.autobaud();
   pinMode(ENCA,INPUT);
   pinMode(ENCB,INPUT);
-  pinMode(PWM,OUTPUT);
-  pinMode(IN1,OUTPUT);
-  pinMode(IN2,OUTPUT);
-
   attachInterrupt(digitalPinToInterrupt(ENCA),
                   readEncoder,RISING);
 }
@@ -55,8 +53,8 @@ void loop() {
   prevT = currT;
 
   // Convert count/s to RPM
-  float v1 = velocity1/600.0*60.0; // 600 is per this example. Ours is 1 revolution of motor shaft per 256 pulses or count and 1/20 revolution at geared shaft per 1 revolution of motor shaft. That gives 5120 instead of 600.
-  float v2 = velocity2/600.0*60.0; // The units stochoimetry is pulses/second * 1 revoMotorShaft/256 Pulses * 1 revoGearedShaft/20 revoMotorShaft = revoGearedShaft/second * 60 second/min = rpm
+  float v1 = velocity1/5120.0*60.0; // 600 is per this example. Ours is 1 revolution of motor shaft per 256 pulses or count and 1/20 revolution at geared shaft per 1 revolution of motor shaft. That gives 5120 instead of 600.
+  float v2 = velocity2/5120.0*60.0; // The units stochoimetry is pulses/second * 1 revoMotorShaft/256 Pulses * 1 revoGearedShaft/20 revoMotorShaft = revoGearedShaft/second * 60 second/min = rpm
 
   // Low-pass filter (25 Hz cutoff)
   v1Filt = 0.854*v1Filt + 0.0728*v1 + 0.0728*v1Prev;
@@ -81,10 +79,10 @@ void loop() {
     dir = -1;
   }
   int pwr = (int) fabs(u); //We grab the magnitude of u because signs only show direction of voltage.
-  if(pwr > 255){
-    pwr = 255;
+  if(pwr > 64){
+    pwr = 64;
   }
-  setMotor(dir,pwr,PWM,IN1,IN2);
+  setMotor(dir,pwr);
 
   Serial.print(vt);
   Serial.print(" ");
@@ -93,22 +91,19 @@ void loop() {
   delay(1);
 }
 
-void setMotor(int dir, int pwmVal, int pwm, int in1, int in2){
-  analogWrite(pwm,pwmVal); // Motor speed
+void setMotor(int dir, int pwmVal){
+  ST.motor(1,pwmVal);// set motor speed
   if(dir == 1){ 
-    // Turn one way
-    digitalWrite(in1,HIGH);
-    digitalWrite(in2,LOW);
+    // Turn CW
+    ST.motor(1,pwmVal);
   }
   else if(dir == -1){
-    // Turn the other way
-    digitalWrite(in1,LOW);
-    digitalWrite(in2,HIGH);
+    // Turn CCW
+    ST.motor(1,-pwmVal);
   }
   else{
     // Or dont turn
-    digitalWrite(in1,LOW);
-    digitalWrite(in2,LOW);    
+    ST.motor(1,0);    
   }
 }
 

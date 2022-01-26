@@ -23,7 +23,7 @@ void loop() {
   int pos = 0;
   // Set incremented values to local variable
   detachInterrupt(digitalPinToInterrupt(ENCA));
-  pos = pos_i;
+  pos = pos_i; //to test overflow, reset pos_i here to see what happens
   attachInterrupt(digitalPinToInterrupt(ENCA),readEncoder,RISING);
   // Compute velocity with method 1
   long currT = micros();

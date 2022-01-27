@@ -1,12 +1,12 @@
 #include <util/atomic.h>
+#include <SoftwareSerial.h>
+#include <Sabertooth.h>
 
 // Pins
 #define ENCA 2
-#define ENCB 3
-#define PWM 5
-#define IN1 6
-#define IN2 7
-
+#define PWM 8
+SoftwareSerial SWSerial(NOT_A_PIN, PWM);//TX on pin 8 to Sabertooth
+Sabertooth ST(128,SWSerial);
 // globals
 long prevT = 0;
 int posPrev = 0;
@@ -25,13 +25,9 @@ float eintegral = 0;
 
 void setup() {
   Serial.begin(115200);
-
+  SWSerial.begin(9600);
+  ST.autobaud();
   pinMode(ENCA,INPUT);
-  pinMode(ENCB,INPUT);
-  pinMode(PWM,OUTPUT);
-  pinMode(IN1,OUTPUT);
-  pinMode(IN2,OUTPUT);
-
   attachInterrupt(digitalPinToInterrupt(ENCA),
                   readEncoder,RISING);
 }
@@ -41,10 +37,8 @@ void loop() {
   // read the position in an atomic block
   // to avoid potential misreads
   int pos = 0;
-  float velocity2 = 0;
   ATOMIC_BLOCK(ATOMIC_RESTORESTATE){
     pos = pos_i;
-    velocity2 = velocity_i;
   }
 
   // Compute velocity with method 1
@@ -53,19 +47,16 @@ void loop() {
   float velocity1 = (pos - posPrev)/deltaT;
   posPrev = pos;
   prevT = currT;
-
   // Convert count/s to RPM
-  float v1 = velocity1/600.0*60.0;
-  float v2 = velocity2/600.0*60.0;
+  float v1 = velocity1/960.0*60.0; // 600 is per this example. Ours is 1 revolution of motor shaft per 48 pulses or count and 1/20 revolution at geared shaft per 1 revolution of motor shaft. That gives 5120 instead of 600.
 
   // Low-pass filter (25 Hz cutoff)
   v1Filt = 0.854*v1Filt + 0.0728*v1 + 0.0728*v1Prev;
   v1Prev = v1;
-  v2Filt = 0.854*v2Filt + 0.0728*v2 + 0.0728*v2Prev;
-  v2Prev = v2;
+
 
   // Set a target
-  float vt = 100*(sin(currT/1e6)>0);
+  float vt = 50; // Ours is 50rpm, 
 
   // Compute the control signal u
   float kp = 5;
@@ -80,11 +71,11 @@ void loop() {
   if (u<0){
     dir = -1;
   }
-  int pwr = (int) fabs(u);
-  if(pwr > 255){
-    pwr = 255;
+  int pwr = (int) fabs(u); //We grab the magnitude of u because signs only show direction of voltage.
+  if(pwr > 35){
+    pwr = 35;
   }
-  setMotor(dir,pwr,PWM,IN1,IN2);
+  setMotor(dir,pwr);
 
   Serial.print(vt);
   Serial.print(" ");
@@ -93,42 +84,24 @@ void loop() {
   delay(1);
 }
 
-void setMotor(int dir, int pwmVal, int pwm, int in1, int in2){
-  analogWrite(pwm,pwmVal); // Motor speed
+void setMotor(int dir, int pwmVal){
+  ST.motor(1,pwmVal);// set motor speed
   if(dir == 1){ 
-    // Turn one way
-    digitalWrite(in1,HIGH);
-    digitalWrite(in2,LOW);
+    // Turn CW
+    ST.motor(1,pwmVal);
   }
   else if(dir == -1){
-    // Turn the other way
-    digitalWrite(in1,LOW);
-    digitalWrite(in2,HIGH);
+    // Turn CCW
+    ST.motor(1,-pwmVal);
   }
   else{
     // Or dont turn
-    digitalWrite(in1,LOW);
-    digitalWrite(in2,LOW);    
+    ST.motor(1,0);    
   }
 }
 
 void readEncoder(){
-  // Read encoder B when ENCA rises
-  int b = digitalRead(ENCB);
-  int increment = 0;
-  if(b>0){
-    // If B is high, increment forward
-    increment = 1;
-  }
-  else{
-    // Otherwise, increment backward
-    increment = -1;
-  }
+  int increment = 1;
   pos_i = pos_i + increment;
 
-  // Compute velocity with method 2
-  long currT = micros();
-  float deltaT = ((float) (currT - prevT_i))/1.0e6;
-  velocity_i = increment/deltaT;
-  prevT_i = currT;
 }

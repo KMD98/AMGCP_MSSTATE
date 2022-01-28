@@ -96,12 +96,12 @@ void call_PID(float rpm, float deltaTPID){
 void setMotor(int dir, int pwmVal){
   if(dir == 1){ 
     // Turn CW
-    pwmVal = map(pwmVal,0,255,133,200);
+    pwmVal = map(pwmVal,0,255,133,160);
     analogWrite(PWM,pwmVal);
   }
   else if(dir == -1){
     // Turn CCW
-    pwmVal = map(pwmVal,0,255,126,60);
+    pwmVal = map(pwmVal,0,255,126,90);
     analogWrite(PWM,pwmVal);
   }
   else{

@@ -67,8 +67,8 @@ void call_PID(float rpm, float deltaTPID){
   // Set a target
   float target = 37.0; // Ours is 37rpm
   // Compute the control signal u
-  float kp = 3;
-  float ki = 1.5;
+  float kp = 1;
+  float ki = 0;
   float kd = 0;
   float e = target-rpm;
   float dedt = (e - eprev)/deltaTPID;
@@ -76,16 +76,16 @@ void call_PID(float rpm, float deltaTPID){
   eprev = e;
   //Serial.print(kp*e);Serial.print(" ");Serial.print(ki*eintegral);Serial.print(" "); Serial.println(kd*dedt);
   float u = kp*e + ki*eintegral + kd*dedt;
-  // Set the motor speed and direction
+  // Set the motor speed and direction. CW in this case. Will need to change to array of dir.
   int dir = 1;
-  if (u<0){
-    dir = -1;
+  int duty = (int) fabs(u); //We grab the magnitude of u because signs only show direction of voltage. Direction will be determined by high level controller.
+  if(u >= 255){
+    duty = 255;
   }
-  int pwr = (int) fabs(u); //We grab the magnitude of u because signs only show direction of voltage.
-  if(pwr > 255){
-    pwr = 255;
+  else if ( u <= 0){
+    duty = 0;
   }
-  setMotor(dir,pwr);
+  setMotor(dir,duty);
 
   Serial.print(target);
   Serial.print(" ");
@@ -96,12 +96,12 @@ void call_PID(float rpm, float deltaTPID){
 void setMotor(int dir, int pwmVal){
   if(dir == 1){ 
     // Turn CW
-    pwmVal = map(pwmVal,0,255,133,160);
+    pwmVal = map(pwmVal,0,255,132,255); //Experimental result with sabertooth and logic converter show 132 to be CW nearly stopped speed
     analogWrite(PWM,pwmVal);
   }
   else if(dir == -1){
     // Turn CCW
-    pwmVal = map(pwmVal,0,255,126,90);
+    pwmVal = map(pwmVal,0,255,127,0); //Experiemental result with sabertooth and logic converter show 127 to be CCW nearly stopped speed
     analogWrite(PWM,pwmVal);
   }
   else{

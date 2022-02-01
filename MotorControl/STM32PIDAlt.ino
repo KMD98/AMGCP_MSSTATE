@@ -19,7 +19,6 @@ long rpm[] = {0,0,0,0};
 volatile int pos_i[] = {0,0,0,0};
 
 
-
 template<int j>
 void readEncoder(){
   int increment = 1;
@@ -53,7 +52,7 @@ void loop() {
   // time difference for PID
   unsigned long currTPID = micros();
   float deltaTPID = ((float) (currTPID - prevTPID))/1e6;
-  call_PID(rpm[0],deltaTPID, targetRPM);
+  //call_PID(rpm[0],deltaTPID, targetRPM);
   //Set previous for rpm. We do this last because we want to get into PID as fast as possible and previous initialization does not have to happen til right before the next iteration.
   previousT = currT;
   prevpos[0] = pos[0];

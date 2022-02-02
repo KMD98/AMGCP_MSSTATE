@@ -54,7 +54,7 @@ class BrushedDCPID{
 // Declare pins and change with respect to wiring. Note that each index must corresponds.
 // For example: enca[0] = PB12 must be the encoder for PID loop that controls PWM[0] = PB0
 const int enca[] ={PB12,PB13,PB14,PB15};
-const int PWM[] = {PB0,PB1,PB2,PB3};
+const int PWM[] = {PB0,PB1,PB2,PB3}; // O index is driver side (targetRPM[0]), 1 index is passenger side (targetRPM[1]), 2 index is driver side rear(targetRPM[0]), 3 index is passenger side rear (targetRPM[1])
 
 
 //PID Globals that are not in the class
@@ -129,7 +129,7 @@ void loop() {
   for(int k = 0;k < sizeof(NMOTORS);k++){
     int duty,dir;    
     //duty and dir are passed by reference, they will be used to set the motor speed
-    pid[k].evaluate(rpm[k],targetRPM,deltaTPID,duty,dir);
+    pid[k].evaluate(rpm[k],targetRPM[k%2],deltaTPID,duty,dir);
     // signal the motor
     setMotor(dir,duty,PWM[k]);
     // Print results

@@ -47,8 +47,9 @@ class BrushedDCPID{
 };
 
 // Define motor amount and potentiometer pin
-#define POT PA7
+#define POTPassenger PA7
 #define NMOTORS 4 //Change going from PeeWee to Betty, vice-versa
+#define POTDriver PA6
 
 // Declare pins and change with respect to wiring. Note that each index must corresponds.
 // For example: enca[0] = PB12 must be the encoder for PID loop that controls PWM[0] = PB0
@@ -64,6 +65,7 @@ unsigned long previousT[] = {0,0,0,0};
 int distance[] = {0,0,0,0};
 int prevpos[] = {0,0,0,0};
 long rpm[] = {0,0,0,0};
+int targetRPM[] = {0,0};
 
 //interrupt variables
 volatile int pos_i[] = {0,0,0,0};
@@ -103,9 +105,10 @@ void setup() {
 
 void loop() {
   //Find target
-  int pot_val = analogRead(POT);
-  long targetRPM = map(pot_val,0,1025,0,37); // Our max is 37rpm to be safe.
-  
+  int pot_valPass = analogRead(POTPassenger);
+  int pot_valDriver = analogRead(POTDriver);
+  targetRPM[0] = map(pot_valPass,0,1024,0,37); // Our max is 37rpm to be safe.
+  targetRPM[1] = map(pot_valDriver,0,1024,0,37)
   //Get rpm
   int pos[] = {0,0,0,0};
   //Determine rpm for all 4 motors and set current to previous for next iteration.

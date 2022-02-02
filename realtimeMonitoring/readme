@@ -1,1 +1,2 @@
 sender at mgcp receives enable bit from base and sends monitoring data to base during operation. Base is also able to send unenable bit to mgcp receiver but has yet to be implemented into code
+This is currently on paused. There are other important things.

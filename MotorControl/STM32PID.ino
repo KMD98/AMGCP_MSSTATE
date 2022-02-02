@@ -1,6 +1,6 @@
-/* Creator: Kha Dan
+/* Creator: Kha Dan. Research Engineer
  * Date: February 1st, 2022
- * Description:The purpose of the code is to use a sabertooth 2x60 driver to drive 4 brushed t74 motors 
+ * Description:The purpose of the code is to use two sabertooth 2x60 drivers to drive 4 brushed t74 motors 
  * from NPC with CUI encoders.
  */
 class BrushedDCPID{
@@ -53,7 +53,7 @@ class BrushedDCPID{
 
 // Declare pins and change with respect to wiring. Note that each index must corresponds.
 // For example: enca[0] = PB12 must be the encoder for PID loop that controls PWM[0] = PB0
-const int enca[] ={PB12,PB13,PB14,PB15};
+const int enca[] ={PB12,PB13,PB14,PB15};// O index is driver side (targetRPM[0]), 1 index is passenger side (targetRPM[1]), 2 index is driver side rear(targetRPM[0]), 3 index is passenger side rear (targetRPM[1])
 const int PWM[] = {PB0,PB1,PB2,PB3}; // O index is driver side (targetRPM[0]), 1 index is passenger side (targetRPM[1]), 2 index is driver side rear(targetRPM[0]), 3 index is passenger side rear (targetRPM[1])
 
 
@@ -107,8 +107,8 @@ void loop() {
   //Find target
   int pot_valPass = analogRead(POTPassenger);
   int pot_valDriver = analogRead(POTDriver);
-  targetRPM[0] = map(pot_valPass,0,1024,0,37); // Our max is 37rpm to be safe.
-  targetRPM[1] = map(pot_valDriver,0,1024,0,37)
+  targetRPM[0] = map(pot_valDriver,0,1024,0,37);
+  targetRPM[1] = map(pot_valPass,0,1024,0,37); // Our max is 37rpm to be safe.
   //Get rpm
   int pos[] = {0,0,0,0};
   //Determine rpm for all 4 motors and set current to previous for next iteration.

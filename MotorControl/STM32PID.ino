@@ -49,12 +49,12 @@ class BrushedDCPID{
 // Define motor amount and potentiometer pin
 #define POTPassenger PA7
 #define NMOTORS 4 //Change going from PeeWee to Betty, vice-versa
-#define POTDriver PA6
+#define POTDriver PA4
 
 // Declare pins and change with respect to wiring. Note that each index must corresponds.
 // For example: enca[0] = PB12 must be the encoder for PID loop that controls PWM[0] = PB0
-const int enca[] ={PB12,PB13,PB14,PB15};// O index is driver side (targetRPM[0]), 1 index is passenger side (targetRPM[1]), 2 index is driver side rear(targetRPM[0]), 3 index is passenger side rear (targetRPM[1])
-const int PWM[] = {PB0,PB1,PB2,PB3}; // O index is driver side (targetRPM[0]), 1 index is passenger side (targetRPM[1]), 2 index is driver side rear(targetRPM[0]), 3 index is passenger side rear (targetRPM[1])
+const int enca[] ={PB7,PB12,PB13,PB14};// O index is driver side (targetRPM[0]), 1 index is passenger side (targetRPM[1]), 2 index is driver side rear(targetRPM[0]), 3 index is passenger side rear (targetRPM[1])
+const int PWM[] = {PB1,PB0,PA6,PA5}; // O index is driver side (targetRPM[0]), 1 index is passenger side (targetRPM[1]), 2 index is driver side rear(targetRPM[0]), 3 index is passenger side rear (targetRPM[1])
 
 
 //PID Globals that are not in the class
@@ -134,15 +134,17 @@ void loop() {
     setMotor(dir,duty,PWM[k]);
     // Print results
   }
-  Serial.print(target);
+  Serial.print(target[0]);
+  Serial.print(" ");
+  Serial.print(target[1]);
   Serial.print(" ");
   Serial.print(rpm[0]);
   Serial.print(" ");
   Serial.print(rpm[1]);
-  Serial.print(" ");
+  /*Serial.print(" ");
   Serial.print(rpm[2]);
   Serial.print(" ");
-  Serial.print(rpm[3]);
+  Serial.print(rpm[3]);*/
   Serial.println();  
   //Set previous time for PID
   prevTPID = currTPID;

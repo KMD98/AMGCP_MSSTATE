@@ -97,9 +97,7 @@ class NodeSubscriber:
             if self.drone_displacement >= self.camera_footprint: #means that the drone has imaged and is at least a camera footprint away
                 self.counter = self.counter + 1
                 self.drone_at_WP = False
-                return True #Needs to change because it constantly return false
-        return False        
-
+    
     def spin(self):
         while not rospy.is_shutdown():
             if self.new_message:

@@ -60,11 +60,12 @@ class NodeSubscriber:
         self.MGCP_displacement = self.getDisplacement(MGCP_lat,MGCP_lon,WP_lat,WP_lon) #Distance between MGCP and waypoint in cm. Goal is to reduce to <10cm
         self.drone_displacement = self.getDisplacement(lat_drone,lon_drone,WP_lat,WP_lon)
         self.waypoint_angle = self.getWaypointAngle(MGCP_lat,MGCP_lon,WP_lat,WP_lon) #angle between north and waypoint or MGCP desired angle
-        self.heading_error = self.waypoint_angle - self.odometry_data[4] #degree that MGCP must turn to get to desired waypoint_angle. - is counterclock, + is clockwise
+        self.heading_error = self.waypoint_angle - self.odometry_data[4] #degree that MGCP must turn to get to desired waypoint_angle. - is counterclock, + is clockwise. Use this as indicator wheter to turn left or right.
         #Uncomment for debugging
         '''rospy.loginfo("displacement to goal MGCP: %f cm", self.MGCP_displacement)
         rospy.loginfo("displacement to goal Drone: %f cm", self.drone_displacement)
         rospy.loginfo("waypoints angle/azimuth: %f degrees", self.waypoint_angle)
+        rospy.loginfo("Betty's heading: %f degrees",self.waypoint_angle)
         rospy.loginfo("heading error: %f degrees", self.heading_error)'''
      
     def getDisplacement(self,lat1,lon1,lat2,lon2):
@@ -96,7 +97,7 @@ class NodeSubscriber:
             if self.drone_displacement >= self.camera_footprint: #means that the drone has imaged and is at least a camera footprint away
                 self.counter = self.counter + 1
                 self.drone_at_WP = False
-                return True
+                return True #Needs to change because it constantly return false
         return False        
 
     def spin(self):
@@ -115,7 +116,7 @@ class NodeSubscriber:
                         elif self.MGCP_displacement < 50.0:
                             #send brake command
                             ####insert brake code here####
-                            self.is_imaged_by_drone()
+                            self.is_imaged_by_drone() ##This function ensure drone_imaged is true then set next waypoint
                             if self.counter == (len(latWP) - 1):
                                 break
                     elif abs(self.heading_error) >= 1:
@@ -126,6 +127,7 @@ if __name__ == '__main__':
     try:
         navigator = NodeSubscriber()
         navigator.spin()
+        rospy.loginfo("Finished")
     except rospy.ROSInterruptException:
         pass
         

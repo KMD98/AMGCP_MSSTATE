@@ -26,6 +26,7 @@ int prevpos[] = {0,0,0,0};
 int rpm[] = {0,0,0,0};
 //I2C global. Set my high level computer
 byte targetRPM[] = {0,0,0,0};
+byte requestData[] = {0,0,0,0,0,0,0,0};
 //interrupt variables
 volatile int pos_i[] = {0,0,0,0};
 
@@ -127,7 +128,14 @@ void setMotor(int dir, int pwmVal,int pwmPin){
 }
 
 void requestEvent(){
-  Wire2.write(targetRPM,4);//Request event funciton must be present in order for I2C master to detect slave.
+  //Request data returns data in the following format [tarDriver,dirDriver,tarPass,dirPass,m1speed,m2speed,m3speed,m4speed]
+  for(int i = 0; i < sizeof(targetRPM); i++){
+    requestData[i] = targetRPM[i]; 
+  }
+  for(int i = 0; i < sizeof(rpm); i++){
+    requestData[i+4] = byte(rpm[i]);
+  }
+  Wire2.write(requestData,8);//Request event funciton must be present in order for I2C master to detect slave.
 }
 void receiveEvent(int desiredSpeeds) {
   int i = 0;

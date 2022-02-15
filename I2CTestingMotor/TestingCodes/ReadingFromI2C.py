@@ -5,26 +5,25 @@ import time
 from ros_essentials_cpp.msg import IoTSensor
 import rospy
  
-addr = 0x9 # bus address
+addr = 0x6 # bus address
 bus = SMBus(1) # indicates /dev/ic2-1
 
 def readData():
-	#bus.write_i2c_block_data(addr,0,data)
-	temp = bus.read_i2c_block_data(addr,0,12)
+	temp = bus.read_i2c_block_data(addr,0,8)
 	return temp
 
-def testing():
-    rospy.init_node('testData',anonymous = True)
-    rate = rospy.Rate(5)
+def spin():
+    rospy.init_node('rpmRead10Hz',anonymous = True)
+    rate = rospy.Rate(10)
     while not rospy.is_shutdown():
-        temporary = readData()
-        rospy.loginfo(temporary)
+        motor_data = readData()
+        rospy.loginfo(motor_data)
         rate.sleep()
 
 
 if __name__ == '__main__':
 	try:
-		testing()
+		spin()
 	except rospy.ROSInterruptException:
 		pass
 

@@ -55,6 +55,8 @@ def bytetoStringDrone(temp):
             coor.append(data[count] + "." + data[count+1])
             break
     data.clear()
+    #convert strings in coor list to floats
+    coor = [float(i) for i in coor]
     return coor
 
 def bytetoStringMGCP(temp):
@@ -66,23 +68,23 @@ def bytetoStringMGCP(temp):
         i+=4
     #Divide lat and lon data by 10000000.0f and height by 1000.0f to get decimal place
     if temp[16] == 1:
-        data[0] = str(-1*(float(data[0])/float(10000000.0)))
+        data[0] = -1*(float(data[0])/float(10000000.0))
     elif temp[16] == 0:
-        data[0] = str((float(data[0])/float(10000000.0)))
+        data[0] = float(data[0])/float(10000000.0)
     if temp[17] == 1:
-        data[1] = str(-1*(float(data[1])/float(10000000.0)))      
+        data[1] = -1*(float(data[1])/float(10000000.0))     
     elif temp[17] == 0:
-        data[1] = str((float(data[1])/float(10000000.0)))      
+        data[1] = float(data[1])/float(10000000.0)      
     if temp[18] == 1:
-        data[2] = str(-1*(float(data[2])/float(1000.0)))
+        data[2] = -1*(float(data[2])/float(1000.0))
     if temp[18] == 0:
-        data[2] = str(float(data[2])/float(1000.0))
+        data[2] = float(data[2])/float(1000.0)
     #ground speed cannot be negative so no condition statement needed here
-    data[3] = str(float(data[3])/float(1000.0))
+    data[3] = float(data[3])/float(1000.0)
     return data
 
 def bytetoStringHeading(temp):
-    data = str(float((temp[0]<<24) + (temp[1]<<16) + (temp[2]<<8) + temp[3])/float(100.0))
+    data = (float((temp[0]<<24) + (temp[1]<<16) + (temp[2]<<8) + temp[3])/float(100.0))
     return data
 
         

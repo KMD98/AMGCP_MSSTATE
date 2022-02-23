@@ -4,4 +4,4 @@ Files are in shp format so conver to .json before running algorithm MapChooseWP.
 Video Demo is at https://www.youtube.com/watch?v=haW9aEzZedo
 Order of execution is run python3 MapChooseWP.py
 After picking WP in MapChooseWP.py, operator can run MappingJSON.py to see the resulting map. Must run MapChooseWP.py before MappingJSON.py so the local folder
-can contain the xpath and ypath of the waypoints
+can contain the xpath and ypath of the waypoints. IF operator want to see if the chosen waypoints fits with drone trajectory then run realtimeplotSHP

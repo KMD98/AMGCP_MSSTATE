@@ -22,9 +22,8 @@ class NodeSubscriber:
         self.processing = False #ensure that callback doesnt change odometry value until navigator is done processing current odometry
         #Initialize latWP and lonWP. Make sure gcp_xpath.txt, gcp_ypath.txt, MapChooseWP, realtimeSHP,gcpfunctions,drone.json files are all in the same folder.
         #If new WP are set then all ROS nodes need to be terminated and reconnected before operation. ALso make the path to the file is correct
-        self.latWP=[] #y axis. Gotta use lists because waypoints are dynamic
+        self.latWP=[] #y axis. Gotta use lists because waypoints are dynamic. These are already in UTM
         self.lonWP=[] #x axis
-        self.utm_WP = [] #stores wp in utm
         self.counter = 0
         self.enabled = False #enabled will be set based on a gpio button connected to robot or radio....will determine later
         self.drone_at_WP = False #indicator that drone has reached a WP
@@ -38,10 +37,6 @@ class NodeSubscriber:
         with open('/home/khadan/catkin_ws/src/ros_essentials_cpp/src/AMGCP_PCTesting/gcp_ypath.txt','r') as fhandle:
             for y_coordinates in fhandle:
                 self.latWP.append(float(y_coordinates))
-        for i in range(0, len(self.lonWP)):
-            self.utm_WP.append(utm.from_latlon(self.latWP[i],self.lonWP[i]))
-        #uncomment print stay for debugging
-        #print(self.utm_WP)
 
         #this node subribes to the amgcp_RTKpose topic which the RTK publisher publishes to
         rospy.Subscriber("amgcp_RTKpose", AMGCP_RTKpose, self.amgcp_callback)
@@ -134,7 +129,7 @@ class NodeSubscriber:
                 displacement_vector_UGV = AMGCP_displacement()
                 self.new_message = False #dont iterate again until new data comes in
                 #subroutines for navigating that is time dependent.
-                self.pathTracker(self.odometry_AMGCPdata[0],self.odometry_AMGCPdata[1],self.utm_WP[self.counter][0],self.utm_WP[self.counter][1], self.odometry_dronedata[0],self.odometry_dronedata[1]) #processing with pathtracker.
+                self.pathTracker(self.odometry_AMGCPdata[0],self.odometry_AMGCPdata[1],self.lon_WP[self.counter],self.lat_WP[self.counter], self.odometry_dronedata[0],self.odometry_dronedata[1]) #processing with pathtracker.
                 #Ready to publish displacement vector
                 displacement_vector_UGV.x = self.MGCP_displacement[0] #x displacement
                 displacement_vector_UGV.y = self.MGCP_displacement[1] #y displacement

@@ -8,7 +8,8 @@ This sample shows how to get the camera pose in a world reference
  
 ## Run the program
 
-      python "positional_tracking.py"
+      python "positional_tracking.py" for positional tracking with GL viewer
+      python pose_trackingTest.py for positional tracking with euler angles and xyz translation vector in right hand z up config. No usage of GL viewer
 
 ### Features
  - An OpenGL window displays the camera path in a 3D window
@@ -16,3 +17,4 @@ This sample shows how to get the camera pose in a world reference
 
 ## Support
 If you need assistance go to our Community site at https://community.stereolabs.com/
+Most of the code is modified by Kha Dan. Please reach out to me at khadan.manh@gmail.com

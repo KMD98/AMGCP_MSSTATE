@@ -129,7 +129,7 @@ class NodeSubscriber:
                 displacement_vector_UGV = AMGCP_displacement()
                 self.new_message = False #dont iterate again until new data comes in
                 #subroutines for navigating that is time dependent.
-                self.pathTracker(self.odometry_AMGCPdata[0],self.odometry_AMGCPdata[1],self.lon_WP[self.counter],self.lat_WP[self.counter], self.odometry_dronedata[0],self.odometry_dronedata[1]) #processing with pathtracker.
+                self.pathTracker(self.odometry_AMGCPdata[0],self.odometry_AMGCPdata[1],self.lonWP[self.counter],self.latWP[self.counter], self.odometry_dronedata[0],self.odometry_dronedata[1]) #processing with pathtracker.
                 #Ready to publish displacement vector
                 displacement_vector_UGV.x = self.MGCP_displacement[0] #x displacement
                 displacement_vector_UGV.y = self.MGCP_displacement[1] #y displacement

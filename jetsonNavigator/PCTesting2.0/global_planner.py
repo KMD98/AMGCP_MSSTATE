@@ -135,7 +135,7 @@ class NodeSubscriber:
                 displacement_vector_UGV.y = self.MGCP_displacement[1] #y displacement
                 displacement_vector_UGV.straight_line = self.MGCP_displacement[2] #straight line distance between wp and current pose
                 displacement_vector_UGV.turn_angle = self.heading_error #the angle to turn from current angle to meet the desired azimuth/bearing
-                displacement_vector_UGV.current_angle = self.odometry_AMGCPdata[2] #the current bearing
+                displacement_vector_UGV.current_bearing = self.odometry_AMGCPdata[2] #the current bearing
                 self.ugv_pub.publish(displacement_vector_UGV)
                 self.processing = False #processing is done, new data can be collected. Put at the end of this code section
             

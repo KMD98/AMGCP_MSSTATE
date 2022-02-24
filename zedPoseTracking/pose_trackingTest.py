@@ -9,7 +9,7 @@ from math import degrees
 from tf.transformations import euler_from_quaternion
 if __name__ == "__main__":
 
-    init_params = sl.InitParameters(camera_resolution=sl.RESOLUTION.HD720,
+    init_params = sl.InitParameters(camera_resolution=sl.RESOLUTION.VGA,
                                  coordinate_units=sl.UNIT.METER,
                                  coordinate_system=sl.COORDINATE_SYSTEM.RIGHT_HANDED_Z_UP)
                                  
@@ -24,8 +24,12 @@ if __name__ == "__main__":
     initial_position = sl.Transform()
     # Set the initial positon of the Camera Frame at 0.5m above the World Frame
     initial_translation = sl.Translation()
+    initial_orientation = sl.Orientation()
     initial_translation.init_vector(0,0,0.5)
+    initial_orientation.init_vector(0,0,1,0) #feed gps rtk heading before start and calculate the angle need to be turn in quaternion
     initial_position.set_translation(initial_translation) #set the object at 0.5m above ground
+    initial_position.set_orientation(initial_orientation) #set the object at x degrees from y axis
+
 
     tracking_params = sl.PositionalTrackingParameters(initial_position) #begin tracking with the inital position
     zed.enable_positional_tracking(tracking_params)

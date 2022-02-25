@@ -25,6 +25,7 @@ class MotorDriver:
 		while not rospy.is_shutdown():
 			#stuck in this loop and awaits updates from the topic motor_speed unless ctrl+c termination
 			#as soon as an update arrive. the setspeed_call back is called to send data via i2c
+			rospy.spin()
 
 
 if __name__ == '__main__':

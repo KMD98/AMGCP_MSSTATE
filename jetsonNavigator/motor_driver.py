@@ -22,9 +22,7 @@ class MotorDriver:
 		self.bus.write_i2c_block_data(self.addr,1,self.speed_data)
 
 	def spin(self):
-		while not rospy.is_shutdown():
-			#stuck in this loop and awaits updates from the topic motor_speed unless ctrl+c termination
-			#as soon as an update arrive. the setspeed_call back is called to send data via i2c
+		rospy.spin() #program is only being called to write the message on i2c. It does not do anything else and is stuck in this loop
 
 
 if __name__ == '__main__':

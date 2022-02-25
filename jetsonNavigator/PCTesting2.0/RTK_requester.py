@@ -129,6 +129,7 @@ def odometryPub():
 if __name__ == '__main__':
     try:
         odometryPub()
+        rospy.spin()
     except rospy.ROSInterruptException:
         pass
 

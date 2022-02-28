@@ -8,3 +8,5 @@
   - The robot weighs 400lbs
 ## Support
   - If you run into problems or have questions. Reach out to me at khadan.manh@gmail.com or dan@gri.msstate.edu
+  - Reach out to Collin Mcleod if I do not answer on time. cm2928@msstate.edu
+  - Our principal investigar is Alex Thomasson. athomassons@abe.msstate.edu

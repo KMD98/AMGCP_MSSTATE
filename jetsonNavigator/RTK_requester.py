@@ -97,7 +97,7 @@ def odometryPub():
     while not rospy.is_shutdown():
         amgcp_data = AMGCP_RTKpose()
         drone_data = drone_RTKpose()
-        '''drone_coor = readingI2CbusDrone(addr_droneCoor)
+        drone_coor = readingI2CbusDrone(addr_droneCoor)
         #delay between reads to be definite that SDA Has pulled low
         time.sleep(0.005)
         mgcp_coor = readingI2CBusMGCP(addr_MGCPCoor)
@@ -110,15 +110,7 @@ def odometryPub():
         amgcp_data.MGCP_lon = mgcp_coor[1]
         amgcp_data.MGCP_height = mgcp_coor[2]
         amgcp_data.MGCP_groundSpeed = mgcp_coor[3]
-        amgcp_data.MGCP_heading = mgcp_heading'''
-        drone_data.drone_lat = 29.7581671 #y axis
-        drone_data.drone_lon = -95.6237016 #x-axis
-        drone_data.drone_hmsl = 28.392
-        amgcp_data.amgcp_lat = 29.758128
-        amgcp_data.amgcp_lon = -95.6237184
-        amgcp_data.amgcp_height = 40.129
-        amgcp_data.speed2D = 1000
-        amgcp_data.bearing = 250.30
+        amgcp_data.MGCP_heading = mgcp_heading
         '''rospy.loginfo("I published: ")
         rospy.loginfo(drone_data)
         rospy.loginfo(amgcp_data)'''

@@ -144,6 +144,7 @@ if __name__ == '__main__':
         navigator = NodeSubscriber()
         navigator.spin()
         rospy.loginfo("Finished")
+        rospy.spin()
     except rospy.ROSInterruptException:
         pass
         

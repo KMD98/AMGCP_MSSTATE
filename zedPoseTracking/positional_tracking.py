@@ -54,7 +54,7 @@ if __name__ == "__main__":
     initial_translation = sl.Translation()
     initial_orientation = sl.Orientation()
     initial_translation.init_vector(0,0,0.5)
-    initial_orientation.init_vector(0,0,1,0) #feed gps rtk heading before start
+    initial_orientation.init_vector(0,0,0,1) #feed gps rtk heading before start
     initial_position.set_translation(initial_translation) #set the object at 0.5m above ground
     initial_position.set_orientation(initial_orientation) #set the object at x degrees from y axis
 

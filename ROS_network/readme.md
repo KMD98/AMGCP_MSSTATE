@@ -1,4 +1,2 @@
-# Information
-  - This folder contains the ROS network that will launch on the jetson nano.
-# Support
-  - I am the maintainer of this network. dan@gri.msstate.edu
+xpath and ypath files are temporary and dependent on the drone map provided. Please run MapChooseWP.py and export the xpath and ypath into ROS package that
+contains Navigator. The files provided in this repository is just for testing

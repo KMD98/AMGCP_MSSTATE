@@ -25,6 +25,7 @@ class MotorDriver:
 		rospy.spin() #program is only being called to write the message on i2c. It does not do anything else and is stuck in this loop
 
 
+
 if __name__ == '__main__':
 	try:
 		driver = MotorDriver()

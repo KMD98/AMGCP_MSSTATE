@@ -119,9 +119,9 @@ def odometryPub():
         amgcp_data.amgcp_height = 40.129
         amgcp_data.speed2D = 1000
         amgcp_data.bearing = 250.30
-        rospy.loginfo("I published: ")
+        '''rospy.loginfo("I published: ")
         rospy.loginfo(drone_data)
-        rospy.loginfo(amgcp_data)
+        rospy.loginfo(amgcp_data)'''
         uav_pub.publish(drone_data)
         ugs_pub.publish(amgcp_data)
         rate.sleep()

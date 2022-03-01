@@ -1,6 +1,7 @@
+# DEPRECATED. USE ROS WRAPPER PROVIDED BY STEREOLABS
 # ZED SDK - Positional Tracking
 
-This sample shows how to get the camera pose in a world reference
+This sample shows how to get the camera pose in a world reference.
 
 ## Getting Started
  - Get the latest [ZED SDK](https://www.stereolabs.com/developers/release/) and [pyZED Package](https://www.stereolabs.com/docs/app-development/python/install/)

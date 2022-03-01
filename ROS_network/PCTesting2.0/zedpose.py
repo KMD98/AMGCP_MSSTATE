@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 #Positional Tracking with Zed2i camera in ROS Noetic
 # Creator: Kha Dan Research Engineer
 # Company: Mississippi State University

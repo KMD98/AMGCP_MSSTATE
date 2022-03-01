@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 #from smbus2 import SMBus
 import rospy
 import numpy as np

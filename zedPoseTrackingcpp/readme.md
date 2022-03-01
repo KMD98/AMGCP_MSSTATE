@@ -1,3 +1,4 @@
+# DEPRECATED. USE ZED_ROS_WRAPPER PROVIDED BY STEREOLABS
 # Building c++ file instructions
   - download the cpp folder
   - navigate to cpp directory

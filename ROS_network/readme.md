@@ -14,5 +14,7 @@
   - also note that zed_ros_wrapper need zed_ros_interface package before compiling catkin_make.
   - MAKE SURE zed_ros_interface, zed_ros_wrapper, ros_essentials_cpp are all in the src folder of catkin_ws before catkin_make. All three folders need to be together to work.
   - /home/khadan/catkin_ws/src/zed-ros-wrapper/zed_wrapper/params set common.yaml fused point cloud mapping from false to true so ros_essentials_cpp packages can subscribe to point cloud data without needing manual startup input for spatial mapping
+# ZED .yaml files
+  - zed-wrap-param folder contains the two yaml file that was optimized for the jetson nano. Replace the generic yaml files that came with the zed repo with those two.
 # Support
   - Kha Dan is the maintainer of this folder. dan@gri.msstate.edu

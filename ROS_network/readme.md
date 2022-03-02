@@ -2,6 +2,8 @@
   - This code runs the main ROS network on the PC ubuntu 20.04. Refer to system diagram for overview of the network
   - xpath and ypath files are temporary and dependent on the drone map provided. Please run MapChooseWP.py and export the xpath and ypath into global_planner.py's folder
   - Local_planner.py is currently under construction and ros topics provided by zed_ros_wrapper can be found https://www.stereolabs.com/docs/ros/zed-node/#spatial-mapping
+# Launch file
+  - The launch file navigation.launch launches all navigation node along with zed2i.launch from the zed_ros_wrapper package. Running rqt_graph will show the entire network. Please note that the launch file is specific to PC and the paths are only applicable for Kha Dan's PC. A separate but similar launch file for jetson nano will be in the ROS_jetson folder; the main difference between two launch files is the path differentiation between PC and jetson.
 # Zed_ros_wrapper package
   - zed_ros_wrapper package is stored in the same src folder as ros_essentials_cpp package (contain these navigation codes).
   - run zed wrapper by roslaunch zed_wrapper zed2i.launch. Go into another terminal and do rqt_graph to see all available topics or rostopic echo /tab

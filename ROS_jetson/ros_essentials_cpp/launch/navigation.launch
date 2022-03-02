@@ -2,6 +2,7 @@
     <node pkg="ros_essentials_cpp" type="RTK_requester.py" name="RTK_odometry_node" output="screen" />
     <node pkg="ros_essentials_cpp" type="global_planner.py" name="global_planner" output="screen" />
     <node pkg="ros_essentials_cpp" type="local_planner.py" name="local_planner" output="screen" />
+    <node pkg="ros_essentials_cpp" type="motor_driver.py" name="motor_driver" output="screen" />
     
     <include file="/home/jetson/catkin_ws/src/zed-ros-wrapper/zed_wrapper/launch/zed2i.launch" />
 </launch>

@@ -17,7 +17,7 @@ class MotorDriver:
 		rospy.Subscriber("motor_speeds",motor_odometry,self.setspeed_callback)
 		#Declare the topic that it is going to publish to, in this case the topic have real encoder readings
 		self.pub = rospy.Publisher('feedback_rpm',encoder_odometry,queue_size=10)
-		self.rate = rospy.Rate(5) #set to 5Hz
+		self.rate = rospy.Rate(10) #set to 5Hz
 
 	
 	def setspeed_callback(self,motor_data):

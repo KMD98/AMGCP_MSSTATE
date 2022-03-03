@@ -111,11 +111,11 @@ def odometryPub():
         drone_data.drone_lat = drone_coor[0] #y axis
         drone_data.drone_lon = drone_coor[1] #x-axis
         drone_data.drone_height = drone_coor[2]
-        amgcp_data.MGCP_lat = mgcp_coor[0]
-        amgcp_data.MGCP_lon = mgcp_coor[1]
-        amgcp_data.MGCP_height = mgcp_coor[2]
-        amgcp_data.MGCP_groundSpeed = mgcp_coor[3]
-        amgcp_data.MGCP_heading = mgcp_heading'''
+        amgcp_data.amgcp_lat = mgcp_coor[0]
+        amgcp_data.amgcp_lon = mgcp_coor[1]
+        amgcp_data.amgcp_height = mgcp_coor[2]
+        amgcp_data.speed2D = mgcp_coor[3]
+        amgcp_data.bearing = mgcp_heading'''
         drone_data.drone_lat = 33.4776589 #y axis
         drone_data.drone_lon = -88.8263006 #x-axis
         drone_data.drone_hmsl = 120

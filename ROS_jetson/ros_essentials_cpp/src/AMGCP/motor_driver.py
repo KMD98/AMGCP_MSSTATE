@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-#from smbus import SMBus
+from smbus import SMBus
 import rospy
 import numpy as np
 from ros_essentials_cpp.msg import motor_odometry,encoder_odometry

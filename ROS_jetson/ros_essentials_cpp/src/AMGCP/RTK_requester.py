@@ -2,14 +2,14 @@
 # Creator: Kha Dan Research Engineer
 # Code info: Gather all RTK data on I2C and publish lat lon heading speed of autonomous robot
 # and publishes lat lon heigh of UAV  
-#from smbus import SMBus
+from smbus import SMBus
 import time
 import rospy
 from ros_essentials_cpp.msg import drone_RTKpose, AMGCP_RTKpose
 addr_droneCoor = 0x08
 addr_MGCPCoor = 0x09
 addr_heading = 0x07
-#bus = SMBus(1)
+bus = SMBus(1)
     
 #I2C subroutines for master and send back data from each slave
 def readingI2CbusDrone(addr):
@@ -111,11 +111,11 @@ def odometryPub():
         drone_data.drone_lat = drone_coor[0] #y axis
         drone_data.drone_lon = drone_coor[1] #x-axis
         drone_data.drone_height = drone_coor[2]
-        amgcp_data.MGCP_lat = mgcp_coor[0]
-        amgcp_data.MGCP_lon = mgcp_coor[1]
-        amgcp_data.MGCP_height = mgcp_coor[2]
-        amgcp_data.MGCP_groundSpeed = mgcp_coor[3]
-        amgcp_data.MGCP_heading = mgcp_heading'''
+        amgcp_data.amgcp_lat = mgcp_coor[0]
+        amgcp_data.amgcp_lon = mgcp_coor[1]
+        amgcp_data.amgcp_height = mgcp_coor[2]
+        amgcp_data.speed2D = mgcp_coor[3]
+        amgcp_data.bearing = mgcp_heading'''
         drone_data.drone_lat = 33.4776589 #y axis
         drone_data.drone_lon = -88.8263006 #x-axis
         drone_data.drone_hmsl = 120

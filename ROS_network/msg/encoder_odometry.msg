@@ -1,8 +1,8 @@
-float32 target_driver
+byte target_driver
 byte dir_driver
-float32 target_pass
+byte target_pass
 byte dir_pass
-float32 enc1
-float32 enc2
-float32 enc3
-float32 enc4
+byte enc1
+byte enc2
+byte enc3
+byte enc4

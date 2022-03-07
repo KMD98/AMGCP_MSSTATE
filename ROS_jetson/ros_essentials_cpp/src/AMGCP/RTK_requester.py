@@ -97,8 +97,8 @@ def odometryPub():
     rospy.loginfo("Started node %s" % node_name)
     ugs_pub = rospy.Publisher('amgcp_RTKpose',AMGCP_RTKpose,queue_size=10)
     uav_pub = rospy.Publisher('drone_RTKpose',drone_RTKpose,queue_size=10)
-    #loop rate is 5Hz
-    rate = rospy.Rate(5)
+    #loop rate is 1Hz
+    rate = rospy.Rate(1)
     while not rospy.is_shutdown():
         amgcp_data = AMGCP_RTKpose()
         drone_data = drone_RTKpose()

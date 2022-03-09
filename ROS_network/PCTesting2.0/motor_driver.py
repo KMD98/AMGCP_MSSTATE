@@ -20,7 +20,6 @@ class MotorDriver:
 		self.pub = rospy.Publisher('feedback_rpm',encoder_odometry,queue_size=10)
 		self.rate = rospy.Rate(10) #set to 10Hz
 
-	
 	def setspeed_callback(self,motor_data):
 		self.speed_data[0] = motor_data.driver_side
 		self.speed_data[1] = motor_data.driver_dir
@@ -58,7 +57,6 @@ class MotorDriver:
 			actual_rpm.enc4= temp[7]
 			self.pub(actual_rpm)
 			self.rate.sleep()
-
 
 if __name__ == '__main__':
 	try:

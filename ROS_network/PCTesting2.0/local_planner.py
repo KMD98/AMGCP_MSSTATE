@@ -90,7 +90,7 @@ class pathPlanner:
         
         #Begin local navigation planner
         while not rospy.is_shutdown:
-            self.sw[:] = [GPIO.input(RTK_SW),GPIO.input(operation_SW).GPIO.input(autonomous_SW)]
+            self.sw[:] = np.array([GPIO.input(RTK_SW),GPIO.input(operation_SW).GPIO.input(autonomous_SW)])
             if (sw[0] and sw[1] and sw[2]):
                 motor_speeds = motor_odometry()
                 temp_yawdiff = self.yaw_difference(self.zed_pose[5], self.goal_vector[5])

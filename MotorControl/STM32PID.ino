@@ -12,7 +12,6 @@
 #define PWM2 PB0 //motor 1
 #define PWM3 PA6
 #define PWM4 PB5
-#define POT PA7
 TwoWire Wire2(PB9,PB8);
 const int NMOTORS = 4;
 //PID Globals

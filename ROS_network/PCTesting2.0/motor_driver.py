@@ -14,10 +14,10 @@ class MotorDriver:
 		self.node_name = rospy.get_name()
 		rospy.loginfo("Started node %s" % self.node_name)
 		#Declare the topic that it is subscribed to, in this case the desired motor speeds
-		rospy.Subscriber("autonomous_speeds",motor_odometry,self.setspeed_callback)
-		rospy.Subscriber("manual_speeds",motor_odometry,self.manual_callback)
+		rospy.Subscriber("/motors/autonomous_speeds",motor_odometry,self.setspeed_callback)
+		rospy.Subscriber("/motors/manual_speeds",motor_odometry,self.manual_callback)
 		#Declare the topic that it is going to publish to, in this case the topic have real encoder readings
-		self.pub = rospy.Publisher('feedback_rpm',encoder_odometry,queue_size=10)
+		self.pub = rospy.Publisher('/motors/feedback_rpm',encoder_odometry,queue_size=10)
 		self.rate = rospy.Rate(10) #set to 10Hz
 
 	def setspeed_callback(self,autonomous_data):

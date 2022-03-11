@@ -18,8 +18,8 @@ class localPlanner:
         self.node_name = rospy.get_name()
         rospy.loginfo("Started node %s" % self.node_name)
         rospy.Subscriber("/zed2i/zed_node/pose", PoseStamped, self.zed_callback)
-        rospy.Subscriber("amgcp_goalDisplacement", AMGCP_displacement, self.displacement_callback)
-        self.pub = rospy.Publisher('autonomous_speeds',motor_odometry,queue_size=10)
+        rospy.Subscriber("/RTK/amgcp_goalDisplacement", AMGCP_displacement, self.displacement_callback)
+        self.pub = rospy.Publisher('/motors/autonomous_speeds',motor_odometry,queue_size=10)
         #storage arrays for zed position and orientation
         self.zed_pose = np.zeros(6)
         #AGMCP variables

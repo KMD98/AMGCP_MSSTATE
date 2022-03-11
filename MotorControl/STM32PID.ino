@@ -4,15 +4,14 @@
  */
 #include <Wire.h>
 // Pins. Note that ENCAM1 is the feedback signal for PWM1. 
-#define ENCAM1 PB7//motor 2
-#define ENCAM2 PB12 //motor 1
+#define ENCAM1 PB7//motor 2 driver side
+#define ENCAM2 PB12 //motor 1 passenger side
 #define ENCAM3 PB13
 #define ENCAM4 PB14
 #define PWM1 PB1 //motor 2
 #define PWM2 PB0 //motor 1
 #define PWM3 PA6
 #define PWM4 PB5
-#define POT PA7
 TwoWire Wire2(PB9,PB8);
 const int NMOTORS = 4;
 //PID Globals
@@ -24,19 +23,18 @@ unsigned long previousT = 0;
 int distance[] = {0,0,0,0};
 int prevpos[] = {0,0,0,0};
 int rpm[] = {0,0,0,0};
-//I2C global. Set my high level computer
-byte targetRPM[] = {0,0,0,0};
-byte requestData[] = {0,0,0,0,0,0,0,0};
+//I2C global. Set by high level computer
+byte targetRPM[] = {0,0,0,0}; //{passenger side,passenger direction 1 or 0, driver, driver direction} where 1 is CW and 0 is CCW
+byte requestData[] = {0,0,0,0,0,0,0,0}; //{target pass, target pass dir, target driver, target driver dir, m1 passenger, m2 driver,m3 passenger, m4 driver
 //interrupt variables
 volatile int pos_i[] = {0,0,0,0};
-
-
 
 template<int j>
 void readEncoder(){
   int increment = 1;
   pos_i[j] = pos_i[j] + increment;
 }
+
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
@@ -69,16 +67,17 @@ void loop() {
   // time difference for PID
   unsigned long currTPID = micros();
   float deltaTPID = ((float) (currTPID - prevTPID))/1e6;
-  //call_PID(rpm[0],deltaTPID,targetRPM[0],1,0.65,0,PWM1,targetRPM[1]); // motor 2
-  //call_PID(rpm[1],deltaTPID,targetRPM[2],1,0.65,0,PWM2,targetRPM[3]); //motor 1
+  //Uncomment below after testing that the data communication algorithm between ROS network and pid controller via I2C is a success. The code actuate the motors
+  //call_PID(rpm[0],deltaTPID,targetRPM[0],1,0.65,0,PWM1,targetRPM[1]); // motor 2 is driver side
+  //call_PID(rpm[1],deltaTPID,targetRPM[2],1,0.65,0,PWM2,targetRPM[3]); //motor 1 is passenger side
 
   //Set previous time for rpm.
   previousT = currT;
   //Set previous for PID
   prevTPID = currTPID;
-  Serial.print(targetRPM[0]);
+  Serial.print(targetRPM[0]);//driver side
   Serial.print(" ");
-  Serial.print(targetRPM[2]);
+  Serial.print(targetRPM[2]);//passenger side
   Serial.print(" ");
   Serial.print(rpm[0]);
   Serial.print(" ");
@@ -104,19 +103,20 @@ void call_PID(int rpm, float deltaTPID,int target,float kp,float ki,float kd,int
     duty = 0;
   }
 
-  if(target <= 1){ // if target is 1 rpm or 0 rpm then just stop moving
+  if(target <= 3){ // if target is 3 or less rpm or 0 rpm then just stop moving
     duty = 0;
   }
   setMotor(dir,duty,pwmPin);
   delay(1);  
 }
+
 void setMotor(int dir, int pwmVal,int pwmPin){
   if(dir == 1){ 
     // Turn CW
     pwmVal = map(pwmVal,0,255,129,255); //Experimental result with sabertooth and logic converter show 129 to be CW nearly stopped speed
     analogWrite(pwmPin,pwmVal);
   }
-  else if(dir == -1){
+  else if(dir == 0){
     // Turn CCW
     pwmVal = map(pwmVal,0,255,129,0); //Experiemental result with sabertooth and logic converter show 129 to be CCW nearly stopped speed
     analogWrite(pwmPin,pwmVal);
@@ -137,6 +137,7 @@ void requestEvent(){
   }
   Wire2.write(requestData,8);//Request event funciton must be present in order for I2C master to detect slave.
 }
+
 void receiveEvent(int desiredSpeeds) {
   int i = 0;
   Wire2.read(); //Get rid of the 0 delimiter coming from the master. The remaining bytes are the valuable values.

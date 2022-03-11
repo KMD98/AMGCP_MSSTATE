@@ -34,19 +34,19 @@ class NodeSubscriber:
         self.R = 6378.0 #radius of the earth in km
         self.waypoint_angle = 0 #azimuth in degrees
         self.heading_error = 0 #angle between waypoint and robot heading in degrees
-        with open('/home/jetson/catkin_ws/src/ros_essentials_cpp/src/AMGCP/gcp_xpath.txt','r') as fhandle:
+        with open('/home/khadan/catkin_ws/src/ros_essentials_cpp/src/AMGCP_PCTesting/gcp_xpath.txt','r') as fhandle:
             for x_coordinates in fhandle:
                 self.lonWP.append(float(x_coordinates))
-        with open('/home/jetson/catkin_ws/src/ros_essentials_cpp/src/AMGCP/gcp_ypath.txt','r') as fhandle:
+        with open('/home/khadan/catkin_ws/src/ros_essentials_cpp/src/AMGCP_PCTesting/gcp_ypath.txt','r') as fhandle:
             for y_coordinates in fhandle:
                 self.latWP.append(float(y_coordinates))
 
         #this node subribes to the amgcp_RTKpose topic which the RTK publisher publishes to
-        rospy.Subscriber("amgcp_RTKpose", AMGCP_RTKpose, self.amgcp_callback)
+        rospy.Subscriber("/RTK/amgcp_RTKpose", AMGCP_RTKpose, self.amgcp_callback)
         #this node also subscribes to drone_RTKpose topic
-        rospy.Subscriber("drone_RTKpose", drone_RTKpose,self.drone_callback)
+        rospy.Subscriber("/RTK/drone_RTKpose", drone_RTKpose,self.drone_callback)
         #this node publishes to amgcp_goalDisplacement topic
-        self.ugv_pub = rospy.Publisher('amgcp_goalDisplacement', AMGCP_displacement, queue_size=10)
+        self.ugv_pub = rospy.Publisher('/RTK/amgcp_goalDisplacement', AMGCP_displacement, queue_size=10)
         
     def amgcp_callback(self, amgcp_data):
         #we dont really care for height so we can skip that. Note that we want new data whenever the navigator is done processing

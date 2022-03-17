@@ -78,6 +78,7 @@ class NodeSubscriber:
         self.drone_displacement = np.array(self.getDisplacement(drone_x,drone_y,WP_x,WP_y)) #displacement vector between drone and waypoint
         self.waypoint_angle = self.getWaypointAngle(MGCP_x,MGCP_y,WP_x,WP_y) #angle between north and waypoint or MGCP desired angle
         self.heading_error = self.waypoint_angle - self.odometry_AMGCPdata[2] #degree that MGCP must turn to get to desired waypoint_angle. - is counterclock, + is clockwise. Use this as indicator wheter to turn left or right.
+        self.is_imaged_by_drone()
         #Uncomment for debugging
         '''rospy.loginfo("displacement to goal MGCP: %f cm", self.MGCP_displacement)
         rospy.loginfo("displacement to goal Drone: %f cm", self.drone_displacement)
@@ -133,8 +134,6 @@ class NodeSubscriber:
                 self.new_message = False #dont iterate again until new data comes in
                 #subroutines for navigating that is time dependent
                 self.pathTracker(self.odometry_AMGCPdata[0],self.odometry_AMGCPdata[1],self.lonWP[self.counter],self.latWP[self.counter], self.odometry_dronedata[0],self.odometry_dronedata[1]) #processing with pathtracker.
-                #update drone position to waypoint
-                self.is_imaged_by_drone()
                 #Ready to publish displacement vector
                 displacement_vector_UGV.x = self.MGCP_displacement[0] #x displacement
                 displacement_vector_UGV.y = self.MGCP_displacement[1] #y displacement

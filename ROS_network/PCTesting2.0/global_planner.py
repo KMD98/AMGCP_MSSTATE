@@ -119,7 +119,7 @@ class NodeSubscriber:
         return wpAngle
     
     def is_imaged_by_drone(self):
-        if self.drone_displacement[2] < 10.0:
+        if self.drone_displacement[2] < 200.0:
             self.drone_at_WP = True
         if self.drone_at_WP:
             if self.drone_displacement[2] >= self.camera_footprint: #means that the drone has imaged and is at least a camera footprint away

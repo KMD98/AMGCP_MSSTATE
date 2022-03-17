@@ -142,6 +142,8 @@ class NodeSubscriber:
                 displacement_vector_UGV.current_bearing = self.odometry_AMGCPdata[2] #the current bearing
                 self.ugv_pub.publish(displacement_vector_UGV)
                 self.processing = False #processing is done, new data can be collected. Put at the end of this code section
+            if self.counter >=len(self.latWP)
+                self.counter = 0
             
 if __name__ == '__main__':
     try:

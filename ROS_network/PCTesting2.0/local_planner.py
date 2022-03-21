@@ -6,7 +6,7 @@ from ros_essentials_cpp.msg import AMGCP_displacement,motor_odometry
 import numpy as np
 from math import degrees, radians,cos, sin, sqrt
 from tf.transformations import euler_from_quaternion  #using euler_from_quaternion(quaternion) function
-from ros_essentials_cpp.srv import reset_pose
+from ros_essentials_cpp.srv import set_pose
 #pin definitions
 rtk_SW = 11
 operation_SW = 13
@@ -66,13 +66,13 @@ class localPlanner:
             self.goal_vector[i] = self.zed_pose[i]
 
     def zedpose_reset(self):
-        rospy.wait_for_service('/zed2i/zed_node/reset_pose')
+        rospy.wait_for_service('/zed2i/zed_node/set_pose')
         try:
-            frame_reset = rospy.ServiceProxy('/zed2i/zed_node/reset_pose', reset_pose)
+            frame_reset = rospy.ServiceProxy('/zed2i/zed_node/set_pose', set_pose)
             is_done = frame_reset(0,0,0,0,0,0) #reset, return 1 if success, else 0
             return is_done
         except rospy.ServiceException as e:
-            rospy.loginfo("Service call to zed's reset_tracking service has failed: %s"%e)
+            rospy.loginfo("Service call to zed's set_pose service has failed: %s"%e)
 
     def yaw_difference(self,curr_yaw, desired_yaw):    
         #map function translates yaw in zed frame to 0-360 instead of 0-180 then-180-0 (CCW direction)

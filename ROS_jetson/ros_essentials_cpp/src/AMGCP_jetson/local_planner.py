@@ -6,7 +6,7 @@ from ros_essentials_cpp.msg import AMGCP_displacement,motor_odometry
 import numpy as np
 from math import degrees, radians,cos, sin, sqrt
 from tf.transformations import euler_from_quaternion  #using euler_from_quaternion(quaternion) function
-
+from ros_essentials_cpp.srv import reset_tracking
 #pin definitions
 rtk_SW = 11
 operation_SW = 13
@@ -53,12 +53,51 @@ class localPlanner:
         self.displacement_vect[4] = message_gps.current_bearing 
         # Declare the new goal vector. Declare without for loop because it's faster due to no if statements
         self.goal_vector[0:2] = np.matmul(self.rotation_matrix, self.displacement_vect[0:2]) + self.zed_pose[0:2] #transform displacement vector to camera frame and add to current pose
-        self.goal_vector[5] = self.zed_pose[5] + self.displacement_vect[3] #zed sees rotation from 0,180 then -180,0. Make sure you take this in consideration.
-        for i in range(2,5): #we do not care for z, roll, and pitch value because our robot is UGV
+        #zed sees rotation from 0,180 CCW then 0,-180 CW. subtracting the turn angle volume would have the behavior negative is CCW and CW is positive.
+        self.goal_vector[5] = self.zed_pose[5] - self.displacement_vect[3]
+        #turn goal_vector to appropriate zed rotation frame where a complete rotation CW is 0 to -90, -90 to -180, -180 to 90, 90 to 0 where axis at -180 is the same as 180
+        if abs(self.goal_vector[5]) > 180.0:
+            if self.goal_vector[5] < 0.0:
+                self.goal_vector[5] = 180.0 - (abs(self.goal_vector[5]) - 180.0)
+            elif self.goal_vector[5] >= 0.0:
+                self.goal_vector[5] = -180.0 + (self.goal_vector[5] - 180.0)
+
+        for i in range(2,5): #we do not care for z, roll, and pitch value because our robot is UGV. We just store current zed value here
             self.goal_vector[i] = self.zed_pose[i]
-    
-    def yaw_difference(self,curr_yaw, desired_yaw):
-        return desired_yaw - curr_yaw #remember to make sure that yaw in zed frame is read 0-360 instead of 0-180,-180-0
+
+    def zedpose_reset(self):
+        rospy.wait_for_service('/zed2i/zed_node/reset_tracking')
+        try:
+            tracking_reset = rospy.ServiceProxy('/zed2i/zed_node/reset_tracking', reset_tracking)
+            is_done = tracking_reset() #reset, return 1 if success, else 0
+            return is_done
+        except rospy.ServiceException as e:
+            rospy.loginfo("Service call to zed's reset_tracking service has failed: %s"%e)
+
+    def yaw_difference(self,curr_yaw, desired_yaw):    
+        #map function translates yaw in zed frame to 0-360 instead of 0-180 then-180-0 (CCW direction)
+        def map_value(x, custom_range):
+            return (x - custom_range[0]) * (custom_range[3] - custom_range[2]) / (custom_range[1] - custom_range[0]) + custom_range[2]
+        
+        #create the mapping parameters depending on direction of current yaw
+        if curr_yaw >= 0.0:
+            curr_param = np.array([0,180,360,180])
+        elif curr_yaw < 0.0:
+            curr_param = np.array([0,-180,0,180])
+        if desired_yaw >= 0.0:
+            desired_param = np.array([0,180,360,180])
+        elif desired_yaw < 0.0:
+            desired_param = np.array([0,-180,0,180])
+        #get the angle difference with direction. Shortest path is not considered, and negative value means must turn CCW, and positive means CW
+        temp = map_value(desired_yaw,desired_param) - map_value(curr_yaw,curr_param)
+        #Now find the shortest turn direction to get to desired angle based off the angle difference with direction.
+        if abs(temp) > 180: #Principle: If the robot turn by 180 and it is not there yet, the shortest distrance is in the opposite direction of rotation.
+            if temp < 0:
+                return temp + 360
+            else:
+                return temp - 360
+        else:
+            return temp
     
     def get_shortest_path(self,curr_x,curr_y,goal_x,goal_y):
         return sqrt(pow(goal_x-curr_x,2) + pow(goal_y-curr_y,2))
@@ -88,6 +127,15 @@ class localPlanner:
             self.rate.sleep()
         rospy.loginfo("The operator has indicated RTK is available, please switch ON autonomous mode and switch ON operation")
 
+        #Reset pose tracking to ensure zed's frame is set at the current starting position of the robot.
+        reset_is_success = self.zedpose_reset()
+        count = 0
+        while not reset_is_success:
+            count+=1
+            rospy.loginfo("ERROR CRITICAL!!! Resetting ZED frame to current position has failed!!! Trying to reset at attempt #%s" %count)
+            reset_is_success = self.zedpose_reset()
+            self.rate.sleep()
+        rospy.loginfo("Position reset was successful. Beginning to calculate rotation matrix...")
         #Initialize the rotation_matrix at inital starting position. The robot should not be moving at this initiation and RTK should be available and checked as indicated by operator.
         #Note that as long as the operator FLIPPED the RTK switch when RTK IS available, the rotation matrix will always be correct.
         temp_theta = self.displacement_vect[4] - 90.0

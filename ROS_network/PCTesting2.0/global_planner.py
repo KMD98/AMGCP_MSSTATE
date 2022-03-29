@@ -144,7 +144,7 @@ class NodeSubscriber:
                 displacement_vector_UGV.UTM_y = self.odometry_AMGCPdata[1]
                 self.ugv_pub.publish(displacement_vector_UGV)
                 self.processing = False #processing is done, new data can be collected. Put at the end of this code section
-            if self.counter >=len(self.latWP)
+            if self.counter >=len(self.latWP):
                 self.counter = 0
             
 if __name__ == '__main__':

@@ -25,6 +25,7 @@ find_package(catkin REQUIRED COMPONENTS
    FILES 
    AddTwoInts.srv
    reset_tracking.srv
+   set_pose.srv
    )
 
 ## Generate actions in the 'action' folder

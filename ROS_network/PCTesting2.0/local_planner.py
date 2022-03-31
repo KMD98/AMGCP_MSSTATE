@@ -139,7 +139,7 @@ class localPlanner:
         #Initialize the rotation_matrix at inital starting position. The robot should not be moving at this initiation and RTK should be available and checked as indicated by operator.
         #Note that as long as the operator FLIPPED the RTK switch when RTK IS available, the rotation matrix will always be correct.
         temp_theta = self.displacement_vect[4] - 90.0
-        self.rotation_matrix[[0,1],[1,1]] = cos(radians(temp_theta))
+        self.rotation_matrix[[0,1],[0,1]] = cos(radians(temp_theta))
         self.rotation_matrix[0][1] = -1 * sin(radians(temp_theta))
         self.rotation_matrix[1][0] = sin(radians(temp_theta))
         rospy.loginfo("The inital bearing being used for rotation matrix is: %s" %self.displacement_vect[4]) #use string because loginfo only take strings

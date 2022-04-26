@@ -22,6 +22,8 @@ def poseplot():
     for i in range(1,len(stereo_pose[:,0])):
         total_stereodist = total_stereodist + math.sqrt(math.pow(stereo_pose[i][0] - stereo_pose[i-1][0],2) + math.pow(stereo_pose[i][1] - stereo_pose[i][1],2))
     print("%s m" %total_stereodist)
+    #get loop enclosure error
+    loop_error = math.sqrt(pow(absolute_path[0][0] - stereo_pose[633,0],2) + math.pow(absolute_path[0][1]-stereo_pose[633,1],2))
     fig1,ax2 = plt.subplots()
     ax2.set_ylabel("y(m)")
     ax2.set_xlabel("x(m)")
@@ -34,7 +36,7 @@ def poseplot():
     ax2.legend(loc = 'upper right')
     plt.grid()
     ax2.axis('equal')
-    txt="Average error in total distance traveled: %s m"%(abs(total_absdistance - total_stereodist))
+    txt="Error in total distance traveled and loop enclosure: " + str(round((abs(total_absdistance - total_stereodist)),2)) + 'm ' + str(round(loop_error,2)) +'m.'
     plt.figtext(0.5, 0.01, txt, wrap=True, horizontalalignment='center', fontsize=8)           
     plt.show()
 

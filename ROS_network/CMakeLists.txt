@@ -20,7 +20,9 @@ find_package(catkin REQUIRED COMPONENTS
    AMGCP_RTKpose.msg
    drone_RTKpose.msg
    zed_pose.msg 
-   AMGCP_displacement.msg
+   RTK_corrections.msg
+   encoder_odometry.msg
+   motor_odometry.msg
 )
 
 ## Generate services in the 'srv' folder

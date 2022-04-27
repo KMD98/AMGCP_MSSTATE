@@ -22,7 +22,7 @@ find_package(catkin REQUIRED COMPONENTS
    zed_pose.msg 
    RTK_corrections.msg
    encoder_odometry.msg
-   motor_odometry.msg
+   motor_rpm.msg
 )
 
 ## Generate services in the 'srv' folder

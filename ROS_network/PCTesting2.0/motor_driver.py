@@ -2,7 +2,7 @@
 #from smbus import SMBus
 import rospy
 import numpy as np
-from ros_essentials_cpp.msg import motor_odometry,encoder_odometry
+from ros_essentials_cpp.msg import motor_rpm,encoder_odometry
 
 class MotorDriver:
 	def __init__(self):
@@ -14,8 +14,8 @@ class MotorDriver:
 		self.node_name = rospy.get_name()
 		rospy.loginfo("Started node %s" % self.node_name)
 		#Declare the topic that it is subscribed to, in this case the desired motor speeds
-		rospy.Subscriber("/motors/autonomous_speeds",motor_odometry,self.setspeed_callback)
-		rospy.Subscriber("/motors/manual_speeds",motor_odometry,self.manual_callback)
+		rospy.Subscriber("/motors/autonomous_speeds",motor_rpm,self.setspeed_callback)
+		rospy.Subscriber("/motors/manual_speeds",motor_rpm,self.manual_callback)
 		#Declare the topic that it is going to publish to, in this case the topic have real encoder readings
 		self.pub = rospy.Publisher('/motors/feedback_rpm',encoder_odometry,queue_size=10)
 		self.rate = rospy.Rate(10) #set to 10Hz
@@ -44,7 +44,8 @@ class MotorDriver:
 		return self.bus.read_i2c_block_data(self.addr,0,8)
 
 	def spin(self):
-		while not rospy.is_shutdown():
+		rospy.spin()
+		'''while not rospy.is_shutdown():
 			actual_rpm = encoder_odometry() #declare the message object
 			temp = get_rpm() #read actual encoder data
 			actual_rpm.target_driver = temp[0]
@@ -56,7 +57,7 @@ class MotorDriver:
 			actual_rpm.enc3 = temp[6]
 			actual_rpm.enc4= temp[7]
 			self.pub(actual_rpm)
-			self.rate.sleep()
+			self.rate.sleep()'''
 
 if __name__ == '__main__':
 	try:

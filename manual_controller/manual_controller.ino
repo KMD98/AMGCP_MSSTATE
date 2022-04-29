@@ -89,7 +89,7 @@ void get_commands(){
     right_speed = map(temp[1],55,100,0,zeroturn_speed);
     *(comm_pointer + 2) = right_speed;
     *(comm_pointer) = right_speed;
-    //Flip the direction that is accordance to turning right with zero turn radius.
+    //Flip the direction that is accordance to turning left with zero turn radius.
     *(comm_pointer+1) = 1;
     *(comm_pointer+3) = 0;
   }
@@ -106,7 +106,7 @@ void toXbee(){
   }
   Serial.println();*/
   // Convert contents in comm_pointer from int to char
-  convertBytetoChar();
+  convertInttoChar();
   // Send data out
   for(int c = 0; c < sizeof(data_sent);c++){
     xbee.write(*(data_pointer +c));
@@ -115,7 +115,7 @@ void toXbee(){
   }
   Serial.println();
 }
-void convertBytetoChar(){
+void convertInttoChar(){
   //Convert the two rpm values at index 0 and 2 into separate values per index in the data_sent array
   data_sent[2] = (*comm_pointer) % 10 + '0';
   data_sent[1] = ((*comm_pointer)/10) %10 + '0';

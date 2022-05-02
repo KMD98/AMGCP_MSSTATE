@@ -31,10 +31,6 @@ class MotorDriver:
 		self.speed_data[1] = manual_data.driver_dir
 		self.speed_data[2] = manual_data.passenger_side
 		self.speed_data[3] = manual_data.passenger_dir
-		if not np.array_equal(self.speed_data,self.previous_speeds): #if not the same then send new desired speed commands
-			self.bus.write_i2c_block_data(self.addr,1,self.speed_data.tolist())
-			for i in range(0,4):
-				self.previous_speeds[i] = self.speed_data[i] #initialize "previous array" with current values for next comparison
 				
 	def get_rpm(self):
 		return self.bus.read_i2c_block_data(self.addr,0,8)

@@ -43,7 +43,7 @@ class localPlanner:
         self.zed_pose[2] = message_zed.pose.position.z
         #rospy.loginfo(self.zed_pose) #uncomment for debugging
 
-    def displacement_callback(self, message_gps):
+    def corrections_callback(self, message_gps):
         #rospy.loginfo(message_gps)
         # Store the RTK data in a vector for any future use
         self.displacement_vect[0] = message_gps.x

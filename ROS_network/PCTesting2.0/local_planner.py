@@ -109,7 +109,7 @@ class localPlanner:
         motor_speeds.passenger_dir = byte(dir1)
         motor_speeds.driver_side = byte(speed2)
         motor_speeds.driver_dir = byte(dir2)
-        self.pub(motor_speeds)
+        self.pub.publish(motor_speeds)
 
     def spin(self):
         #write 0,1,0,1 to motor driver
@@ -118,7 +118,7 @@ class localPlanner:
         initial_speed.driver_dir = byte(1)
         initial_speed.passenger_side = byte(0)
         initial_speed.passenger_dir = byte(1)
-        self.pub(initial_speed)
+        self.pub.publish(initial_speed)
 
         # If RTK is not available because the operator has not indicated so, stuck in a loop until reliable and RTK heading and position is available.
         # Note that RTK should not be switched on until the robot is in the operating field and grabbed its first RTK heading and position reading. Else, RTK should be off at all , even in manual mode.

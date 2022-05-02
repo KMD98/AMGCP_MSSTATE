@@ -42,21 +42,24 @@ class MotorDriver:
 				
 	def get_rpm(self):
 		return self.bus.read_i2c_block_data(self.addr,0,8)
+	
+	def rpm_publish(self):
+		actual_rpm = encoder_odometry() #declare the message object
+		temp = self.get_rpm() #read actual encoder data
+		actual_rpm.target_driver = temp[0]
+		actual_rpm.dir_driver= temp[1]
+		actual_rpm.target_pass = temp[2]
+		actual_rpm.dir_pass= temp[3]
+		actual_rpm.enc1 = temp[4]
+		actual_rpm.enc2= temp[5]
+		actual_rpm.enc3 = temp[6]
+		actual_rpm.enc4= temp[7]
+		self.pub(actual_rpm)
 
 	def spin(self):
 		rospy.spin()
 		'''while not rospy.is_shutdown():
-			actual_rpm = encoder_odometry() #declare the message object
-			temp = get_rpm() #read actual encoder data
-			actual_rpm.target_driver = temp[0]
-			actual_rpm.dir_driver= temp[1]
-			actual_rpm.target_pass = temp[2]
-			actual_rpm.dir_pass= temp[3]
-			actual_rpm.enc1 = temp[4]
-			actual_rpm.enc2= temp[5]
-			actual_rpm.enc3 = temp[6]
-			actual_rpm.enc4= temp[7]
-			self.pub(actual_rpm)
+			self.rpm_publish()
 			self.rate.sleep()'''
 
 if __name__ == '__main__':

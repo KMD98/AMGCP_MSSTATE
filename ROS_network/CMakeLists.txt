@@ -19,7 +19,6 @@ find_package(catkin REQUIRED COMPONENTS
    IoTSensor.msg
    AMGCP_RTKpose.msg
    drone_RTKpose.msg
-   zed_pose.msg 
    RTK_corrections.msg
    encoder_odometry.msg
    motor_rpm.msg

@@ -4,10 +4,9 @@
 # All metrics are in meter.
 import rospy
 from math import sin,cos,sqrt,atan2,radians,degrees
-from ros_essentials_cpp.msg import drone_RTKpose, AMGCP_RTKpose
+from ros_essentials_cpp.msg import drone_RTKpose, AMGCP_RTKpose, RTK_corrections
 import utm
 import numpy as np
-from ros_essentials_cpp.msg import AMGCP_displacement
 class NodeSubscriber:   
     def __init__(self):
         #initialize node
@@ -46,7 +45,7 @@ class NodeSubscriber:
         #this node also subscribes to drone_RTKpose topic
         rospy.Subscriber("/RTK/drone_RTKpose", drone_RTKpose,self.drone_callback)
         #this node publishes to amgcp_goalDisplacement topic
-        self.ugv_pub = rospy.Publisher('/RTK/amgcp_goalDisplacement', AMGCP_displacement, queue_size=10)
+        self.ugv_pub = rospy.Publisher('/RTK/pose_corrections', RTK_corrections, queue_size=10)
         
     def amgcp_callback(self, amgcp_data):
         #we dont really care for height so we can skip that. Note that we want new data whenever the navigator is done processing
@@ -133,19 +132,19 @@ class NodeSubscriber:
         while not rospy.is_shutdown():
             if self.new_message:
                 #Declare message type object
-                displacement_vector_UGV = AMGCP_displacement()
+                corrections_UGV = RTK_corrections()
                 self.new_message = False #dont iterate again until new data comes in
                 #subroutines for navigating that is time dependent
                 self.pathTracker(self.odometry_AMGCPdata[0],self.odometry_AMGCPdata[1],self.lonWP[self.counter],self.latWP[self.counter], self.odometry_dronedata[0],self.odometry_dronedata[1]) #processing with pathtracker.
                 #Ready to publish displacement vector
-                displacement_vector_UGV.x = self.MGCP_displacement[0] #x displacement
-                displacement_vector_UGV.y = self.MGCP_displacement[1] #y displacement
-                displacement_vector_UGV.straight_line = self.MGCP_displacement[2] #straight line distance between wp and current pose
-                displacement_vector_UGV.turn_angle = self.heading_error #the angle to turn from current angle to meet the desired azimuth/bearing
-                displacement_vector_UGV.current_bearing = self.odometry_AMGCPdata[2] #the current bearing
-                displacement_vector_UGV.UTM_x = self.odometry_AMGCPdata[0]
-                displacement_vector_UGV.UTM_y = self.odometry_AMGCPdata[1]
-                self.ugv_pub.publish(displacement_vector_UGV)
+                corrections_UGV.x = self.MGCP_displacement[0] #x displacement
+                corrections_UGV.y = self.MGCP_displacement[1] #y displacement
+                corrections_UGV.straight_line = self.MGCP_displacement[2] #straight line distance between wp and current pose
+                corrections_UGV.turn_angle = self.heading_error #the angle to turn from current angle to meet the desired azimuth/bearing
+                corrections_UGV.current_bearing = self.odometry_AMGCPdata[2] #the current bearing
+                corrections_UGV.UTM_x = self.odometry_AMGCPdata[0]
+                corrections_UGV.UTM_y = self.odometry_AMGCPdata[1]
+                self.ugv_pub.publish(corrections_UGV)
                 self.processing = False #processing is done, new data can be collected. Put at the end of this code section
             if self.counter >=len(self.latWP):
                 self.counter = 0

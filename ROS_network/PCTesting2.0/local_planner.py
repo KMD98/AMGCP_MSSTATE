@@ -2,7 +2,7 @@
 import rospy
 import RPi.GPIO as GPIO
 from geometry_msgs.msg import PoseStamped
-from ros_essentials_cpp.msg import AMGCP_displacement,motor_odometry
+from ros_essentials_cpp.msg import RTK_corrections,motor_rpm
 import numpy as np
 from math import degrees, radians,cos, sin, sqrt
 from tf.transformations import euler_from_quaternion  #using euler_from_quaternion(quaternion) function
@@ -18,8 +18,8 @@ class localPlanner:
         self.node_name = rospy.get_name()
         rospy.loginfo("Started node %s" % self.node_name)
         rospy.Subscriber("/zed2i/zed_node/pose", PoseStamped, self.zed_callback)
-        rospy.Subscriber("/RTK/amgcp_goalDisplacement", AMGCP_displacement, self.displacement_callback)
-        self.pub = rospy.Publisher('/motors/autonomous_speeds',motor_odometry,queue_size=10)
+        rospy.Subscriber("/RTK/pose_corrections", RTK_corrections, self.corrections_callback)
+        self.pub = rospy.Publisher('/control/autonomous_speeds',motor_rpm,queue_size=10)
         #storage arrays for zed position and orientation
         self.zed_pose = np.zeros(6)
         #AGMCP variables
@@ -43,7 +43,7 @@ class localPlanner:
         self.zed_pose[2] = message_zed.pose.position.z
         #rospy.loginfo(self.zed_pose) #uncomment for debugging
 
-    def displacement_callback(self, message_gps):
+    def corrections_callback(self, message_gps):
         #rospy.loginfo(message_gps)
         # Store the RTK data in a vector for any future use
         self.displacement_vect[0] = message_gps.x
@@ -104,21 +104,16 @@ class localPlanner:
     
     def move_motors(self,speed1,dir1,speed2,dir2):
         #send to the desired motor speed topic
-        motor_speeds = motor_odometry()
-        motor_speeds.passenger_side = byte(speed1)
-        motor_speeds.passenger_dir = byte(dir1)
-        motor_speeds.driver_side = byte(speed2)
-        motor_speeds.driver_dir = byte(dir2)
-        self.pub(motor_speeds)
+        motor_speeds = motor_rpm()
+        motor_speeds.passenger_side = speed1
+        motor_speeds.passenger_dir = dir1
+        motor_speeds.driver_side = speed2
+        motor_speeds.driver_dir = dir2
+        self.pub.publish(motor_speeds)
 
     def spin(self):
-        #write 0,1,0,1 to motor driver
-        initial_speed = motor_odometry()
-        initial_speed.driver_side = byte(0)
-        initial_speed.driver_dir = byte(1)
-        initial_speed.passenger_side = byte(0)
-        initial_speed.passenger_dir = byte(1)
-        self.pub(initial_speed)
+        #write 0,1,0,1 to motor driver to ensure that the robot is not moving at the start.
+        self.move_motors(0,1,0,1)
 
         # If RTK is not available because the operator has not indicated so, stuck in a loop until reliable and RTK heading and position is available.
         # Note that RTK should not be switched on until the robot is in the operating field and grabbed its first RTK heading and position reading. Else, RTK should be off at all , even in manual mode.

@@ -45,7 +45,7 @@ class NodeSubscriber:
         #this node also subscribes to drone_RTKpose topic
         rospy.Subscriber("/RTK/drone_RTKpose", drone_RTKpose,self.drone_callback)
         #this node publishes to amgcp_goalDisplacement topic
-        self.ugv_pub = rospy.Publisher('/RTK/amgcp_goalDisplacement', RTK_corrections, queue_size=10)
+        self.ugv_pub = rospy.Publisher('/RTK/pose_corrections', RTK_corrections, queue_size=10)
         
     def amgcp_callback(self, amgcp_data):
         #we dont really care for height so we can skip that. Note that we want new data whenever the navigator is done processing

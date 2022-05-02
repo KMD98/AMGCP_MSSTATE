@@ -46,7 +46,7 @@ class MotorDriver:
 		actual_rpm.enc2= temp[5]
 		actual_rpm.enc3 = temp[6]
 		actual_rpm.enc4= temp[7]
-		self.pub(actual_rpm)
+		self.pub.publish(actual_rpm)
 
 	def spin(self):
 		while not rospy.is_shutdown():

@@ -2,7 +2,7 @@
 import rospy
 import RPi.GPIO as GPIO
 from geometry_msgs.msg import PoseStamped
-from ros_essentials_cpp.msg import AMGCP_displacement,motor_rpm
+from ros_essentials_cpp.msg import RTK_corrections,motor_rpm
 import numpy as np
 from math import degrees, radians,cos, sin, sqrt
 from tf.transformations import euler_from_quaternion  #using euler_from_quaternion(quaternion) function
@@ -18,7 +18,7 @@ class localPlanner:
         self.node_name = rospy.get_name()
         rospy.loginfo("Started node %s" % self.node_name)
         rospy.Subscriber("/zed2i/zed_node/pose", PoseStamped, self.zed_callback)
-        rospy.Subscriber("/RTK/amgcp_goalDisplacement", AMGCP_displacement, self.displacement_callback)
+        rospy.Subscriber("/RTK/pose_corrections", RTK_corrections, self.corrections_callback)
         self.pub = rospy.Publisher('/motors/autonomous_speeds',motor_rpm,queue_size=10)
         #storage arrays for zed position and orientation
         self.zed_pose = np.zeros(6)

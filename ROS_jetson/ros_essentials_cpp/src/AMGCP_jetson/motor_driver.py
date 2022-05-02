@@ -39,7 +39,7 @@ class MotorDriver:
 		if not np.array_equal(self.speed_data,self.previous_speeds) or self.first_time: #if not the same then send new desired speed commands
 			self.first_time = False
 			self.bus.write_i2c_block_data(self.addr,1,self.speed_data.tolist())
-			rospy.loginfo(self.speed_data) #Uncomment for debugging purposes
+			#rospy.loginfo(self.speed_data) #Uncomment for debugging purposes
 			for i in range(0,4):
 				self.previous_speeds[i] = self.speed_data[i] #initialize "previous array" with current values for next comparison
 

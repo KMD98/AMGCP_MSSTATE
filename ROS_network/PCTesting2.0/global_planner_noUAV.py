@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # Code info: global planner for UGV
 # Creator: Kha Dan Research Engineer
 # All metrics are in meter.
@@ -27,16 +27,15 @@ class NodeSubscriber:
         self.latWP=[] #y axis. Gotta use lists because waypoints are dynamic. These are already in UTM
         self.lonWP=[] #x axis
         self.counter = 0
-        self.enabled = False #enabled will be set based on a gpio button connected to robot or radio....will determine later
         self.drone_at_WP = False #indicator that drone has reached a WP
         self.camera_footprint = 30 #3000cm or 30m is assumed right now.
         self.R = 6378.0 #radius of the earth in km
         self.waypoint_angle = 0 #azimuth in degrees
         self.heading_error = 0 #angle between waypoint and robot heading in degrees
-        with open('/home/khadan/catkin_ws/src/ros_essentials_cpp/src/AMGCP_PCTesting/gcp_xpath.txt','r') as fhandle:
+        with open('/home/khadan/catkin_ws/src/ros_essentials_cpp/src/AMGCP/gcp_xpath.txt','r') as fhandle:
             for x_coordinates in fhandle:
                 self.lonWP.append(float(x_coordinates))
-        with open('/home/khadan/catkin_ws/src/ros_essentials_cpp/src/AMGCP_PCTesting/gcp_ypath.txt','r') as fhandle:
+        with open('/home/khadan/catkin_ws/src/ros_essentials_cpp/src/AMGCP/gcp_ypath.txt','r') as fhandle:
             for y_coordinates in fhandle:
                 self.latWP.append(float(y_coordinates))
 
@@ -79,7 +78,7 @@ class NodeSubscriber:
         self.heading_error = self.waypoint_angle - self.odometry_AMGCPdata[2] #degree that MGCP must turn to get to desired waypoint_angle. - is counterclock, + is clockwise. Use this as indicator wheter to turn left or right.
         #self.is_imaged_by_drone()
         #Increment waypoint if reached.
-        if self.MGCP_displacement[2] < 15:
+        if self.MGCP_displacement[2] < 0.15:
             self.counter = self.counter + 1
         #Uncomment for debugging
         '''rospy.loginfo("displacement to goal MGCP: %f cm", self.MGCP_displacement)

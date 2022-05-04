@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # Creator: Kha Dan Research Engineer
 # Code info: Gather all RTK data on I2C and publish lat lon heading speed of autonomous robot
 # and publishes lat lon heigh of UAV  

@@ -4,10 +4,9 @@
 # All metrics are in meter.
 import rospy
 from math import sin,cos,sqrt,atan2,radians,degrees
-from ros_essentials_cpp.msg import drone_RTKpose, AMGCP_RTKpose
+from ros_essentials_cpp.msg import drone_RTKpose, AMGCP_RTKpose, RTK_corrections
 import utm
 import numpy as np
-from ros_essentials_cpp.msg import AMGCP_displacement
 class NodeSubscriber:   
     def __init__(self):
         #initialize node
@@ -28,16 +27,15 @@ class NodeSubscriber:
         self.latWP=[] #y axis. Gotta use lists because waypoints are dynamic. These are already in UTM
         self.lonWP=[] #x axis
         self.counter = 0
-        self.enabled = False #enabled will be set based on a gpio button connected to robot or radio....will determine later
         self.drone_at_WP = False #indicator that drone has reached a WP
         self.camera_footprint = 30 #3000cm or 30m is assumed right now.
         self.R = 6378.0 #radius of the earth in km
         self.waypoint_angle = 0 #azimuth in degrees
         self.heading_error = 0 #angle between waypoint and robot heading in degrees
-        with open('/home/khadan/catkin_ws/src/ros_essentials_cpp/src/AMGCP_PCTesting/gcp_xpath.txt','r') as fhandle:
+        with open('/home/jetson/catkin_ws/src/ros_essentials_cpp/src/AMGCP_jetson/gcp_xpath.txt','r') as fhandle:
             for x_coordinates in fhandle:
                 self.lonWP.append(float(x_coordinates))
-        with open('/home/khadan/catkin_ws/src/ros_essentials_cpp/src/AMGCP_PCTesting/gcp_ypath.txt','r') as fhandle:
+        with open('/home/jetson/catkin_ws/src/ros_essentials_cpp/src/AMGCP_jetson/gcp_ypath.txt','r') as fhandle:
             for y_coordinates in fhandle:
                 self.latWP.append(float(y_coordinates))
 
@@ -46,7 +44,7 @@ class NodeSubscriber:
         #this node also subscribes to drone_RTKpose topic
         rospy.Subscriber("/RTK/drone_RTKpose", drone_RTKpose,self.drone_callback)
         #this node publishes to amgcp_goalDisplacement topic
-        self.ugv_pub = rospy.Publisher('/RTK/amgcp_goalDisplacement', AMGCP_displacement, queue_size=10)
+        self.ugv_pub = rospy.Publisher('/RTK/pose_corrections', RTK_corrections, queue_size=10)
         
     def amgcp_callback(self, amgcp_data):
         #we dont really care for height so we can skip that. Note that we want new data whenever the navigator is done processing
@@ -78,6 +76,10 @@ class NodeSubscriber:
         self.drone_displacement = np.array(self.getDisplacement(drone_x,drone_y,WP_x,WP_y)) #displacement vector between drone and waypoint
         self.waypoint_angle = self.getWaypointAngle(MGCP_x,MGCP_y,WP_x,WP_y) #angle between north and waypoint or MGCP desired angle
         self.heading_error = self.waypoint_angle - self.odometry_AMGCPdata[2] #degree that MGCP must turn to get to desired waypoint_angle. - is counterclock, + is clockwise. Use this as indicator wheter to turn left or right.
+        #self.is_imaged_by_drone()
+        #Increment waypoint if reached.
+        if self.MGCP_displacement[2] < 0.15:
+            self.counter = self.counter + 1
         #Uncomment for debugging
         '''rospy.loginfo("displacement to goal MGCP: %f cm", self.MGCP_displacement)
         rospy.loginfo("displacement to goal Drone: %f cm", self.drone_displacement)
@@ -118,7 +120,7 @@ class NodeSubscriber:
         return wpAngle
     
     def is_imaged_by_drone(self):
-        if self.drone_displacement[2] < 10.0:
+        if self.drone_displacement[2] < 200.0:
             self.drone_at_WP = True
         if self.drone_at_WP:
             if self.drone_displacement[2] >= self.camera_footprint: #means that the drone has imaged and is at least a camera footprint away
@@ -129,18 +131,22 @@ class NodeSubscriber:
         while not rospy.is_shutdown():
             if self.new_message:
                 #Declare message type object
-                displacement_vector_UGV = AMGCP_displacement()
+                corrections_UGV = RTK_corrections()
                 self.new_message = False #dont iterate again until new data comes in
-                #subroutines for navigating that is time dependent.
+                #subroutines for navigating that is time dependent
                 self.pathTracker(self.odometry_AMGCPdata[0],self.odometry_AMGCPdata[1],self.lonWP[self.counter],self.latWP[self.counter], self.odometry_dronedata[0],self.odometry_dronedata[1]) #processing with pathtracker.
                 #Ready to publish displacement vector
-                displacement_vector_UGV.x = self.MGCP_displacement[0] #x displacement
-                displacement_vector_UGV.y = self.MGCP_displacement[1] #y displacement
-                displacement_vector_UGV.straight_line = self.MGCP_displacement[2] #straight line distance between wp and current pose
-                displacement_vector_UGV.turn_angle = self.heading_error #the angle to turn from current angle to meet the desired azimuth/bearing
-                displacement_vector_UGV.current_bearing = self.odometry_AMGCPdata[2] #the current bearing
-                self.ugv_pub.publish(displacement_vector_UGV)
+                corrections_UGV.x = self.MGCP_displacement[0] #x displacement
+                corrections_UGV.y = self.MGCP_displacement[1] #y displacement
+                corrections_UGV.straight_line = self.MGCP_displacement[2] #straight line distance between wp and current pose
+                corrections_UGV.turn_angle = self.heading_error #the angle to turn from current angle to meet the desired azimuth/bearing
+                corrections_UGV.current_bearing = self.odometry_AMGCPdata[2] #the current bearing
+                corrections_UGV.UTM_x = self.odometry_AMGCPdata[0]
+                corrections_UGV.UTM_y = self.odometry_AMGCPdata[1]
+                self.ugv_pub.publish(corrections_UGV)
                 self.processing = False #processing is done, new data can be collected. Put at the end of this code section
+            if self.counter >=len(self.latWP):
+                self.counter = 0
             
 if __name__ == '__main__':
     try:

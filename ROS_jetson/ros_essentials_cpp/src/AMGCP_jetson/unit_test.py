@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 #This code serve as a unit test for AMGCP ros network
 import rospy
 import numpy as np

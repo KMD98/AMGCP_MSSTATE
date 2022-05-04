@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 # Code info: global planner for UGV
 # Creator: Kha Dan Research Engineer
 # All metrics are in meter.

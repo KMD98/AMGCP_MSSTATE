@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python
 #Remember to change python3 to python or vice-versa, depending on the computer this ROS network runs on.
 #Do not point python2 to python3 because that will create a filing disaster. Simply change the interpreter requirement
 from ros_essentials_cpp.msg import motor_rpm,operation_modes

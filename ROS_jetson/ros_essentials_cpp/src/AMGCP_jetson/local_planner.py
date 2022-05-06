@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 import rospy
 from geometry_msgs.msg import PoseStamped
 from ros_essentials_cpp.msg import RTK_corrections,motor_rpm,operation_modes,corrected_pose

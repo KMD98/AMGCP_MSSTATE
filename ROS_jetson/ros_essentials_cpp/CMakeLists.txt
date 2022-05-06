@@ -10,9 +10,6 @@ find_package(catkin REQUIRED COMPONENTS
   cv_bridge
   image_transport
   message_generation
-  sensor_msgs
-  pcl_ros
-  pcl_conversions
 )
 
 
@@ -47,8 +44,7 @@ add_action_files(
    DEPENDENCIES
    std_msgs
    actionlib_msgs
-   sensor_msgs
- )
+)
 
 
 ###################################

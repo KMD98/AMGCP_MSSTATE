@@ -101,21 +101,3 @@ add_executable(add_two_ints_client src/topic01_basics/service/add_two_ints_clien
 target_link_libraries(add_two_ints_client ${catkin_LIBRARIES})
 add_dependencies(add_two_ints_client ros_essentials_cpp_gencpp)
 
-add_executable(scan_subscriber_cpp src/topic04_perception02_laser/scan_subscriber.cpp)
-target_link_libraries(scan_subscriber_cpp ${catkin_LIBRARIES})
-target_link_libraries(scan_subscriber_cpp laserscan_lib)
-
-
-find_package(OpenCV)
-include_directories(${OpenCV_INCLUDE_DIRS})
-add_executable(read_video_cpp src/topic03_perception/cpp/read_video.cpp)
-target_link_libraries(read_video_cpp ${catkin_LIBRARIES})
-target_link_libraries(read_video_cpp ${OpenCV_LIBRARIES})
-
-add_executable(open_copy_cpp src/topic03_perception/cpp/open_copy.cpp)
-target_link_libraries(open_copy_cpp ${catkin_LIBRARIES})
-target_link_libraries(open_copy_cpp ${OpenCV_LIBRARIES})
-
-add_executable(image_pub_sub_cpp src/topic03_perception/cpp/image_pub_sub.cpp)
-target_link_libraries(image_pub_sub_cpp ${catkin_LIBRARIES})
-target_link_libraries(image_pub_sub_cpp ${OpenCV_LIBRARIES})

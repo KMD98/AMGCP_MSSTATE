@@ -6,8 +6,8 @@
 SoftwareSerial xbee(PA10,PA9);
 #define vrx PA6
 #define vry PA7
-#define max_speed 45
-#define differential_speed 20 //Always less than max speed and ensure max_speed - differential is not smaller than 20rpm.
+#define max_speed 38
+#define differential_speed 16 //Always less than max speed and ensure max_speed - differential is not smaller than 20rpm.
 #define zeroturn_speed 23
 int sw[] = {PB0,PB1,PB2}; // RTK_enable, ON/OFF operation, AUTONOMOUS/RADIO
 int* sw_p = sw; 

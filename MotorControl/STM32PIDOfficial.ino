@@ -18,7 +18,7 @@ float eprev[] = {0,0,0,0};
 float kp[] = {1.0,1.0,1.0,1.0};
 float ki[] = {0.65,0.65,0.65,0.65};
 float kd[] = {0.0,0.0,0.0,0.0};
-int no_movement[] = {128,125,125}; //125 is rear driver, 127 is rear passenger, and 128 is front
+int no_movement[] = {128,128,128}; //125 is rear driver, 127 is rear passenger, and 128 is front
 //RPM calculator global
 unsigned long previousT = 0;
 int distance[] = {0,0,0,0};

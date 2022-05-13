@@ -3,11 +3,13 @@
 import rospy
 import numpy as np
 from ros_essentials_cpp.msg import motor_rpm,encoder_odometry
+import time
 
 class MotorDriver:
 	def __init__(self):
 		self.addr = 0x6 # bus address
 		#self.bus = SMBus(1) # indicates /dev/ic2-1
+		#time.sleep(0.1)
 		self.speed_data = np.array([0,0,0,0]) #array to send to i2c
 		self.previous_speeds = np.zeros(4) #array to compare previous speed to current
 		self.first_time = True
@@ -38,12 +40,14 @@ class MotorDriver:
 	def send_commands(self):
 		if not np.array_equal(self.speed_data,self.previous_speeds) or self.first_time: #if not the same then send new desired speed commands
 			self.first_time = False
+			#time.sleep(0.01)
 			#self.bus.write_i2c_block_data(self.addr,1,self.speed_data.tolist())
 			#rospy.loginfo(self.speed_data) #Uncomment for debugging purposes
 			for i in range(0,4):
 				self.previous_speeds[i] = self.speed_data[i] #initialize "previous array" with current values for next comparison
 
 	def get_rpm(self):
+		#time.sleep(0.01)
 		return self.bus.read_i2c_block_data(self.addr,0,8)
 	
 	def rpm_publish(self):

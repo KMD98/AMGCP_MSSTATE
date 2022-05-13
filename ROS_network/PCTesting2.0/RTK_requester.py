@@ -10,6 +10,7 @@ addr_droneCoor = 0x08
 addr_MGCPCoor = 0x09
 addr_heading = 0x07
 #bus = SMBus(1)
+#time.sleep(0.100)
     
 #I2C subroutines for master and send back data from each slave
 def readingI2CbusDrone(addr):

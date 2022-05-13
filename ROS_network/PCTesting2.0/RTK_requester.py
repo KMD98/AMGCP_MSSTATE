@@ -102,7 +102,8 @@ def odometryPub():
     while not rospy.is_shutdown():
         amgcp_data = AMGCP_RTKpose()
         drone_data = drone_RTKpose()
-        '''drone_coor = readingI2CbusDrone(addr_droneCoor)
+        '''time.sleep(0.005)
+        drone_coor = readingI2CbusDrone(addr_droneCoor)
         #delay between reads to be definite that SDA Has pulled low
         time.sleep(0.005)
         mgcp_coor = readingI2CBusMGCP(addr_MGCPCoor)

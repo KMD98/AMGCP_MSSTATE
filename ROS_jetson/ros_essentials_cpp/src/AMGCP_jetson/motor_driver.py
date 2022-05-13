@@ -46,6 +46,7 @@ class MotorDriver:
 				self.previous_speeds[i] = self.speed_data[i] #initialize "previous array" with current values for next comparison
 
 	def get_rpm(self):
+		time.sleep(0.01)
 		return self.bus.read_i2c_block_data(self.addr,0,8)
 	
 	def rpm_publish(self):

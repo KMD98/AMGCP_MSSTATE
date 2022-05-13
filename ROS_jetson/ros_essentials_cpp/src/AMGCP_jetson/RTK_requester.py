@@ -10,7 +10,7 @@ addr_droneCoor = 0x08
 addr_MGCPCoor = 0x09
 addr_heading = 0x07
 bus = SMBus(1)
-    
+time.sleep(0.1) #sleeps for 100ms to wait for i2c bus to settle   
 #I2C subroutines for master and send back data from each slave
 def readingI2CbusDrone(addr):
     #grab coordinates
@@ -102,6 +102,7 @@ def odometryPub():
     while not rospy.is_shutdown():
         amgcp_data = AMGCP_RTKpose()
         drone_data = drone_RTKpose()
+        time.sleep(0.005)
         drone_coor = readingI2CbusDrone(addr_droneCoor)
         #delay between reads to be definite that SDA Has pulled low
         time.sleep(0.005)

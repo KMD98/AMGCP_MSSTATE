@@ -3,7 +3,7 @@ from smbus import SMBus
 import rospy
 import numpy as np
 from ros_essentials_cpp.msg import motor_rpm,encoder_odometry
-import sleep
+import time
 class MotorDriver:
 	def __init__(self):
 		self.addr = 0x6 # bus address

@@ -131,11 +131,15 @@ void call_PID(int rpm[], float deltaTPID,byte goal[],float kp[],float ki[],float
     if(u >= 255){
       duty[i] = 255;
     }
-    else if ( u <= 0){
-      duty[i] = 0;
+    else if ( u < 0){
+      if (dir[i] == 1){
+        dir[i] = 0
+        }
+      else if (dir[i] == 0){
+        dir[i] = 1;
+      }
     }
-  
-    if(target <= 3){ // if target is 8 or less rpm or 0 rpm then just stop moving
+    if(target <= 3 && target >= 0){ // if target is 3 or less rpm or 0 rpm then just stop moving because our resolution is about 3 rpm
       duty[i] = 0;
     }
     setMotor(dir[i],duty[i],pin);

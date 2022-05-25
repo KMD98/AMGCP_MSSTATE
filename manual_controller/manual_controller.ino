@@ -6,8 +6,8 @@
 SoftwareSerial xbee(PA10,PA9);
 #define vrx PA6
 #define vry PA7
-#define max_speed 45
-#define differential_speed 20 //Always less than max speed and ensure max_speed - differential is not smaller than 20rpm.
+#define max_speed 40
+#define differential_speed 40 //Always less than max speed and ensure max_speed - differential is not smaller than 0rpm.
 #define zeroturn_speed 23
 int sw[] = {PB0,PB1,PB2}; // RTK_enable, ON/OFF operation, AUTONOMOUS/RADIO
 int* sw_p = sw; 
@@ -53,11 +53,11 @@ void get_commands(){
   int right_speed;
   //Find the rpm values in the x direction
   if(temp[0] <48){ //The joystick is pushed forward and the value decreases as the push increase
-    temp_rpm = map(temp[0],0,47,max_speed,21);
+    temp_rpm = map(temp[0],0,47,max_speed,0);
     dir = 0; //go forward
   }
   else if(temp[0] > 55){
-    temp_rpm = map(temp[0],55,100,21,max_speed); // Joystick is pulled back and value increases as the pull distance increase
+    temp_rpm = map(temp[0],55,100,0,max_speed); // Joystick is pulled back and value increases as the pull distance increase
     dir = 1; //go backwards
   }
   else{
@@ -69,13 +69,25 @@ void get_commands(){
   // Alternate the rpm that is appropriate to the yvalue joystick
   if(temp[1] <48 && temp_rpm != 0){ // the right joystick is steered right with decreasing value towards right. The middle value of joy stick is normally 49, calibration will be needed as time goes by.
     right_speed = map(temp[1],0,47,differential_speed,0);
-    *(comm_pointer + 2) = temp_rpm - right_speed;
-    *(comm_pointer) = temp_rpm;
+    if(temp_rpm >= right_speed){
+      *(comm_pointer + 2) = temp_rpm - right_speed;
+      *(comm_pointer) = temp_rpm;      
+    }
+    else{
+      *(comm_pointer + 2) = 0;
+      *(comm_pointer) = temp_rpm;
+    }
   }
   else if (temp[1] > 55 && temp_rpm != 0){ //the right joystick is steered left with increasing value towards left
     right_speed = map(temp[1],55,100,0,differential_speed);
-    *(comm_pointer) = temp_rpm - right_speed;
-    *(comm_pointer + 2) = temp_rpm;
+    if(temp_rpm >= right_speed){
+      *(comm_pointer) = temp_rpm - right_speed;
+      *(comm_pointer + 2) = temp_rpm;
+    }
+    else{
+      *(comm_pointer) = 0;
+      *(comm_pointer + 2) = temp_rpm;
+    }
   }
   else if(temp[1] <48 && temp_rpm == 0){ //Activate zero turn towards the right.
     right_speed = map(temp[1],0,47,zeroturn_speed,0);

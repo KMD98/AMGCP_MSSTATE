@@ -25,6 +25,9 @@ class localPlanner:
         #Camera frame goal
         self.goal_vector = np.zeros(6) #add current pose of zed with transformed displacement vector to determine the goal point in camera frame.[x,y,z,roll,pitch,yaw]
         self.required_turn = 0
+        #Translating GPS to camera frame
+        self.x_offset = 0 #in meters
+        self.y_offet = 0 # in meters
         #rospy sleep rate
         self.rate = rospy.Rate(20) #1hz
         #declare switch logic array
@@ -45,9 +48,9 @@ class localPlanner:
     def corrections_callback(self, message_gps):
         #rospy.loginfo(message_gps)
         # Store the RTK data in a vector for any future use
-        self.displacement_vect[0] = message_gps.x
-        self.displacement_vect[1] = message_gps.y
-        self.displacement_vect[2] = message_gps.straight_line
+        self.displacement_vect[0] = message_gps.x + self.x_offset
+        self.displacement_vect[1] = message_gps.y + self.y_offset
+        self.displacement_vect[2] = message_gps.straight_line #from gps location to goal, not center of robot.
         self.displacement_vect[3] = message_gps.turn_angle
         self.displacement_vect[4] = message_gps.current_bearing 
         # Declare the new goal vector. Declare without for loop because it's faster due to no if statements

@@ -121,10 +121,10 @@ void loop() {
     displayspeed();
     delay(10);
   }*/
-  /*roboclaw.SpeedAccelM1(address1,4372,0);
-  roboclaw.SpeedAccelM2(address1,4372,0);
-  roboclaw.SpeedAccelM1(address2,4372,0);
-  roboclaw.SpeedAccelM2(address2,4372,0);*/
+  /*roboclaw.SpeedAccelM1(address1,2290,0);
+  roboclaw.SpeedAccelM2(address1,2290,0);
+  roboclaw.SpeedAccelM1(address2,2290,0);
+  roboclaw.SpeedAccelM2(address2,2290,0);*/
 }
 
 void requestEvent(){
